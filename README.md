@@ -14,18 +14,12 @@ Visit https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-m
   
 # Prod - Fairfax
 
-<a href="https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fazuredeploy.json%3Fsv%3D2019-02-02%26st%3D2020-06-24T00%253A29%253A01Z%26se%3D2030-06-25T00%253A29%253A00Z%26sr%3Dc%26sp%3Dr%26sig%3Db8ZTNoY46IANeOadIpzSfEXaBcwymkEhF8v3ICnKhps%253D" target="_blank">
+<a href="https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fazuredeployff.json%3Fsv%3D2019-02-02%26st%3D2020-06-24T00%253A29%253A01Z%26se%3D2030-06-25T00%253A29%253A00Z%26sr%3Dc%26sp%3Dr%26sig%3Db8ZTNoY46IANeOadIpzSfEXaBcwymkEhF8v3ICnKhps%253D" target="_blank">
   <img src="https://aka.ms/deploytoazurebutton"/>
 </a>
 
 <p>
   
-# Dev - Fairfax
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeployff.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D)
-
-<p>
-
 # Dev 
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeploy.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D)
