@@ -24,6 +24,10 @@ Visit https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-m
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeploy.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D)
 
+# Dev - Fairfax
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri//https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeployff.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D)
+
 
 # Whitelist URL's
 1) To whitelist url's open this site in your browser: https://sasweb.microsoft.com/ \
