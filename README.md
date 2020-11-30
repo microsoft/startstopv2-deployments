@@ -30,6 +30,19 @@ Visit https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-m
   <img src="https://aka.ms/deploytoazurebutton"/>
 </a>
 
+# Enable Multi-Subscription support
+After the start/stop deployment completes, please follow the below steps to enable the start/stop to take action across multiple subscriptions
+1) Copy the name of the Azure function that you had created during the deployment
+2) Navigate to your secondary subscription -->  Select the subscription ---> Click on Access Control (IAM)
+3) Click the button "Add role assignments"  
+4) Select a role from the dropdown
+5) Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
+6) Click the Save button
+
+# Deployment steps
+1) The following URL's must be whitelisted: https://github.com/microsoft/startstopv2 and https://github.com/. Follow the below steps on how-to whitelist the urls.
+2) Due to Subscription level role assignment a SAW Device must be used to elevate just in time privileges to start deployment.  
+3) Role Assignment for Azure Functions managed identity must be added at the subscription level on the secondary subscriptions.
 
 # Whitelist URL's
 1) To whitelist url's open this site in your browser: https://sasweb.microsoft.com/ \
@@ -56,15 +69,6 @@ Visit https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-m
 4d) Click add allowlist to whitelist these.
 
 <img src ="images/sasweb%203.JPG" width = " 640" height= "480" >
-
-
-
-
-# Deployment steps
-1) The following URL's must be whitelisted: https://github.com/microsoft/startstopv2 and https://github.com/. Follow the above steps on how-to whitelist the urls.
-2) Due to Subscription level role assignment a SAW Device must be used to elevate just in time privileges to start deployment.  
-3) Role Assignment for Azure Functions managed identity must be added at the subscription level on the secondary subscriptions.
-
 
 
 # Auto Upgrade
