@@ -35,10 +35,10 @@ Visit https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-m
 After the start/stop deployment completes, please follow the below steps to enable the start/stop to take action across multiple subscriptions
 1) Copy the name of the Azure function that you had created during the deployment
 2) Navigate to your secondary subscription -->  Select the subscription ---> Click on Access Control (IAM)
-3) Click the button "Add role assignments"  
+3) Click the button <b>"Add role assignments"</b>  
 4) Select a role from the dropdown
 5) Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
-6) Click the #Save button
+6) Click the <b>Save</b> button
 
 # Deployment steps
 1) The following URL's must be whitelisted: https://github.com/microsoft/startstopv2 and https://github.com/. Follow the below steps on how-to whitelist the urls.
