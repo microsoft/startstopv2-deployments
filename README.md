@@ -43,8 +43,8 @@ After the start/stop deployment completes, please follow the below steps to enab
 # Deployment steps
 1. The following URL's must be whitelisted (Follow the below steps on how-to whitelist the urls): 
    - https://github.com/ 
+   - http://github.githubassets.com/
    - https://raw.githubusercontent.com/
-   - https://startstopv2prod.blob.core.windows.net for prod, or https://startstopv2dev.blob.core.windows.net for dev.
 1. Due to Subscription level role assignment a SAW Device must be used to elevate just in time privileges to start deployment.  
 1. Role Assignment for Azure Functions managed identity must be added at the subscription level on the secondary subscriptions.
 
