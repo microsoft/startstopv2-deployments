@@ -8,46 +8,49 @@ Visit https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-m
 # Prod - Public (Preview) 
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fazuredeploy.json%3Fsv%3D2019-02-02%26st%3D2020-06-24T00%253A29%253A01Z%26se%3D2030-06-25T00%253A29%253A00Z%26sr%3Dc%26sp%3Dr%26sig%3Db8ZTNoY46IANeOadIpzSfEXaBcwymkEhF8v3ICnKhps%253D" target="_blank">
-  <img src="https://aka.ms/deploytoazurebutton"/>
+  <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
 <p>
   
 # Prod - Fairfax (Preview)
 
 <a href="https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fazuredeployff.json%3Fsv%3D2019-02-02%26st%3D2020-06-24T00%253A29%253A01Z%26se%3D2030-06-25T00%253A29%253A00Z%26sr%3Dc%26sp%3Dr%26sig%3Db8ZTNoY46IANeOadIpzSfEXaBcwymkEhF8v3ICnKhps%253D" target="_blank">
-  <img src="https://aka.ms/deploytoazurebutton"/>
+  <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
 
 <p>
   
 # Dev 
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://ms.portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeploy.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D)
+[![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://ms.portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeploy.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D)
 
 # Dev - Fairfax
 
 <a href="https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2dev.blob.core.windows.net%2Fartifacts%2Fazuredeployff.json%3Fsv%3D2019-02-02%26st%3D2020-06-23T06%253A24%253A52Z%26se%3D2027-06-24T06%253A24%253A00Z%26sr%3Dc%26sp%3Drl%26sig%3DGgIYE%252BSCmJJj2UZk86iTpoicN7LFfTXpQNaCd1cVbGM%253D" target="_blank">
-  <img src="https://aka.ms/deploytoazurebutton"/>
+  <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
 
 
 # Enable Multi-Subscription support
 After the start/stop deployment completes, please follow the below steps to enable the start/stop to take action across multiple subscriptions
-1) Copy the name of the Azure function that you had created during the deployment
-2) Navigate to your secondary subscription -->  Select the subscription ---> Click on Access Control (IAM)
-3) Click the button <b>"Add role assignments"</b>  
-4) Select a role from the dropdown
-5) Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
-6) Click the <b>Save</b> button
+1. Copy the name of the Azure function that you had created during the deployment
+1. Navigate to your secondary subscription -->  Select the subscription ---> Click on Access Control (IAM)
+1. Click the button <b>"Add role assignments"</b>  
+1. Select a role from the dropdown
+1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
+1. Click the <b>Save</b> button
 
 # Deployment steps
-1) The following URL's must be whitelisted: https://github.com/microsoft/startstopv2 and https://github.com/. Follow the below steps on how-to whitelist the urls.
-2) Due to Subscription level role assignment a SAW Device must be used to elevate just in time privileges to start deployment.  
-3) Role Assignment for Azure Functions managed identity must be added at the subscription level on the secondary subscriptions.
+1. The following URL's must be whitelisted (Follow the below steps on how-to whitelist the urls): 
+   - https://github.com/microsoft/startstopv2
+   - https://github.com/ 
+   - https://raw.githubusercontent.com/
+1. Due to Subscription level role assignment a SAW Device must be used to elevate just in time privileges to start deployment.  
+1. Role Assignment for Azure Functions managed identity must be added at the subscription level on the secondary subscriptions.
 
 # Whitelist URL's
 1) To whitelist url's open this site in your browser: https://sasweb.microsoft.com/ \
-1a)On the main page click on: <b>My Silos</b>
+1a)On the main page click on: **My Silos**
 <img src ="images/sasweb%201.JPG" width = " 640" height= "480" >
 
 2) Once you select My Silos, click on the Silo you are an Owner of.
@@ -69,7 +72,7 @@ After the start/stop deployment completes, please follow the below steps to enab
 
 4d) Click add allowlist to whitelist these.
 
-<img src ="images/sasweb%203.JPG" width = " 640" height= "480" >
+<img src ="images/sasweb%204.JPG" width = " 640" height= "480" >
 
 
 # Auto Upgrade
@@ -79,14 +82,14 @@ Perform the following steps to automatically sync changes to the master branch t
 ## Connecting to Github
 
 1. Open the Function App from your deployment.
-2. Open Deployment Center
-3. Select 'External Git'
-4. Select 'App Service Build Service'
-5. On the configure page enter:
-  * Repository: https://github.com/microsoft/startstopv2
-  * Branch: master
-  * Repository Type: Git
-  * Private Repository: No
+1. Open Deployment Center
+1. Select 'External Git'
+1. Select 'App Service Build Service'
+1. On the configure page enter:
+   * Repository: https://github.com/microsoft/startstopv2
+   * Branch: master
+   * Repository Type: Git
+   * Private Repository: No
 6. Click Finish
 
 ## Creating Webhook
