@@ -29,13 +29,6 @@ After the start/stop deployment completes, please follow the below steps to enab
 1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
 1. Click the <b>Save</b> button
 
-# Deployment steps
-1. The following URL's must be whitelisted (Follow the below steps on how-to whitelist the urls): 
-   - https://github.com/ 
-   - http://github.githubassets.com/
-   - https://raw.githubusercontent.com/
-1. Due to Subscription level role assignment a SAW Device must be used to elevate just in time privileges to start deployment.  
-1. Role Assignment for Azure Functions managed identity must be added at the subscription level on the secondary subscriptions.
 
 # Whitelist URL's
 1) To whitelist url's open this site in your browser: https://sasweb.microsoft.com/ \
