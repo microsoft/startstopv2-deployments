@@ -30,33 +30,6 @@ After the start/stop deployment completes, please follow the below steps to enab
 1. Click the <b>Save</b> button
 
 
-# Whitelist URL's
-1) To whitelist url's open this site in your browser: https://sasweb.microsoft.com/ \
-1a)On the main page click on: **My Silos**
-<img src ="images/sasweb%201.JPG" width = " 640" height= "480" >
-
-2) Once you select My Silos, click on the Silo you are an Owner of.
-<img src ="images/sasweb%202.JPG" width = " 640" height= "480" >
-
-3) The silo you are an owner of will allow you to add URL's to its whitelist.
-
-3a) Select <b>Request URL Allowlist</b>
-
-<img src ="images/sasweb%203.JPG" width = " 640" height= "480" >
-
-4) Once you open the URL Allowlist select the tab <b>Request Allowlist</b>.
-
-4a) Add the following URLS:  
-
-4b) https://microsoftit.visualstudio.com/OneITVSO/_wiki/wikis/OneITVSO.wiki/9188/Start-Stop-VMs-during-off-hours-Azure-Marketplace-(V2) 
-
-4c) https://github.com/microsoft/startstopv2/blob/master/README.md
-
-4d) Click add allowlist to whitelist these.
-
-<img src ="images/sasweb%204.JPG" width = " 640" height= "480" >
-
-
 # Auto Upgrade
 Users can opt in to get the latest version of the function app installed instantly.
 Perform the following steps to automatically sync changes to the master branch to your function app:
