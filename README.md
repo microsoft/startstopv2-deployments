@@ -2,7 +2,7 @@
 
 The Start/Stop VMs during off-hours feature start or stops enabled Azure VMs. It starts or stops machines on user-defined schedules, provides insights through Azure Monitor logs, and sends optional emails by using action groups. The feature can be enabled on both Azure Resource Manager and classic VMs for most scenarios.
 
-Note: This is our V1 documentation https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-management
+**Note**: This is our V1 documentation https://docs.microsoft.com/en-us/azure/automation/automation-solution-vm-management
 
 
 # Production - GA (Preview) 
