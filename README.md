@@ -30,36 +30,6 @@ After the start/stop deployment completes, please follow the below steps to enab
 1. Click the <b>Save</b> button
 
 
-# Auto Upgrade
-Users can opt in to get the latest version of the function app installed instantly.
-Perform the following steps to automatically sync changes to the master branch to your function app:
-
-## Connecting to Github
-
-1. Open the Function App from your deployment.
-1. Open Deployment Center
-1. Select 'External Git'
-1. Select 'App Service Build Service'
-1. On the configure page enter:
-   * Repository: https://github.com/microsoft/startstopv2
-   * Branch: master
-   * Repository Type: Git
-   * Private Repository: No
-6. Click Finish
-
-## Creating Webhook
-1. Click 'Deployment Credentials and then 'Download Publish Profile'
-2. Create a URL of the following form:
-
-https://$X:Y@X.scm.azurewebsites.net/deploy?scmType=GitHub
-where X is the 'userName' and Y is 'userPWD' in the publish settings.
-
-3. Send a POST call to the following endpoint:
-https://prod-16.centralus.logic.azure.com:443/workflows/98a49e5622064c78b5a62e344e60f5ef/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=oqXG1M5FxtSkA2Xi4ZiirmBroTScjrGeMWk1uYAuv3k
-with a body of the form:
-
-"{'url': 'Z'}" where Z is the URL created in step 2.
-
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
