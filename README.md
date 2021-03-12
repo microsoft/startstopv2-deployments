@@ -4,7 +4,7 @@ The Start/Stop VMs during off-hours feature start or stops enabled Azure VMs. It
 
 V2 User Guide : https://github.com/microsoft/startstopv2-deployments/blob/main/StartStopV2_UserGuide.docx
 
-Note: Before you deploy this solution into your azure subscription, please make sure you have _contributor_ permission at the subscription level.
+**Note:** Before you deploy this solution into your azure subscription, please make sure you have _contributor_ permission at the subscription level.
 
 # Production - GA (Preview) 
 
