@@ -26,7 +26,7 @@ After the start/stop deployment completes, please follow the below steps to enab
 1. Copy the name of the Azure function that you had created during the deployment
 1. Navigate to your secondary subscription -->  Select the subscription ---> Click on Access Control (IAM)
 1. Click the button <b>"Add role assignments"</b>  
-1. Select a role from the dropdown
+1. Select the "_contributor_" role from the dropdown
 1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
 1. Click the <b>Save</b> button
 
