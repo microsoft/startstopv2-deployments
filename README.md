@@ -30,6 +30,21 @@ After the start/stop deployment completes, please follow the below steps to enab
 1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
 1. Click the <b>Save</b> button
 
+# Customer Support Contact
+Please follow the below steps if you want to raise a support ticket from the Azure portal
+  
+1. Go to https://portal.azure.com/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/overview (if public cloud) or https://portal.azure.us/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/overview (if US Government cloud)
+2. Click Create a support request
+3. In the Summary field, provide a description of the issue
+4. In the Issue type field, select Technical
+5. Select the subscription that you deployed to
+6. Select All services
+7. Select Start-Stop V2
+8. Select the appropriate topic from the list
+9. Follow the remaining steps in the form to create the support ticket
+
+**Note:** We will continue to support issues raised in GitHub
+  
 # Microsoft Open Source Code of Conduct
 https://opensource.microsoft.com/codeofconduct
 
