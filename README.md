@@ -21,8 +21,8 @@ V2 User Guide : https://docs.microsoft.com/en-us/azure/azure-functions/start-sto
 
 <p>
   
-# Enable Multi-Subscription support
-After the start/stop deployment is completed, please follow the steps below to enable the feature to take action across multiple subscriptions
+# Enable Multi-Subscription Support
+After the start/stop deployment is completed, please follow the steps below to enable the feature to take action across multiple subscriptions:
 1. Copy the name of the Azure function that you had created during the deployment
 1. Navigate to your secondary subscription -->  Select the subscription ---> Click on Access Control (IAM)
 1. Click the button <b>"Add role assignments"</b>  
@@ -31,7 +31,7 @@ After the start/stop deployment is completed, please follow the steps below to e
 1. Click the <b>Save</b> button
 
 # Customer Support Contact
-Please follow the steps below if you want to submit a support ticket from the Azure portal
+Please follow the steps below if you want to submit a support ticket from the Azure portal:
   
 1. Go to https://portal.azure.com/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/overview (if public cloud) or https://portal.azure.us/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/overview (if US Government cloud)
 2. Click Create a support request
