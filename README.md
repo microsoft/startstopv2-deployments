@@ -11,6 +11,13 @@ V2 User Guide : https://docs.microsoft.com/azure/azure-functions/start-stop-vms/
 <a href="https://ms.portal.azure.com/#create/microsoftcorporation1620879115842.startstopv2startstopv2-08252021" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
+
+### Get Latest Version (Existing Users)
+ 
+ Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the below link to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
+
+[![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://ms.portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fssv2autoupdate.json)
+
 <p>
   
 # Fairfax/USGOV (Preview)
@@ -19,6 +26,12 @@ V2 User Guide : https://docs.microsoft.com/azure/azure-functions/start-stop-vms/
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
 
+ ### Get Latest Version (Existing Users)
+ 
+ Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the below link to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
+
+ [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fssv2autoupdateff.json)
+  
 <p>
   
 # Enable Multi-Subscription Support
