@@ -6,7 +6,7 @@ V2 User Guide : https://docs.microsoft.com/azure/azure-functions/start-stop-vms/
 
 **Note:** Before you deploy this solution into your Azure subscription, please make sure you have **_owner_** permission at the subscription level.
 
-# Global Azure (Preview) 
+# Global Azure
 
 <a href="https://ms.portal.azure.com/#create/microsoftcorporation1620879115842.startstopv2startstopv2-08252021" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
@@ -20,7 +20,7 @@ V2 User Guide : https://docs.microsoft.com/azure/azure-functions/start-stop-vms/
 
 <p>
   
-# Fairfax/USGOV (Preview)
+# Fairfax/USGOV
 
 <a href="https://portal.azure.us/#create/microsoftcorporation1620879115842.startstopv2-gov-fairfaxstartstopv2gov-09012021" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
