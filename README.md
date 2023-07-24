@@ -58,8 +58,6 @@ Please follow the steps below if you want to submit a support ticket from the Az
 7. Select Start-Stop V2
 8. Select the appropriate topic from the list
 9. Follow the remaining steps in the form to create the support ticket
-
-**Note:** As of July 24, 2023, we no longer support issues submitted on GitHub.
   
 # Microsoft Open Source Code of Conduct
 https://opensource.microsoft.com/codeofconduct
