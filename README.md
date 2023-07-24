@@ -43,6 +43,9 @@ After the start/stop deployment is completed, please follow the steps below to e
 1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
 1. Click the <b>Save</b> button
 
+# Known issues
+- The CostAnalyticsFunction and SavingsAnalyticsFunction functions might return failures such as 429 Too Many Requests errors. There is no ETA for fixing this issue, but this function does not impact the functionality of the Start/Stop V2 solution. This function is used by Microsoft to estimate aggregate savings of Start/Stop V2 across customers.
+
 # Customer Support Contact
 Please follow the steps below if you want to submit a support ticket from the Azure portal:
   
