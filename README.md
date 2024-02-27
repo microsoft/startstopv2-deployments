@@ -16,10 +16,12 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
  
  Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the below link to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
 
+**Note**: Running this template replaces previous files in the Function App, if updated file versions are available. To ensure that the file deployment is successful, we recommend that you stop the Function App before you run this template. After the template finishes running, you can start the Function App.
+
 [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fssv2autoupdate.json)
 
 <p>
-  
+
 # Fairfax/USGOV
 
 <a href="https://portal.azure.us/#create/microsoftcorporation1620879115842.startstopv2-gov-fairfaxstartstopv2gov-09012021" target="_blank">
@@ -30,10 +32,12 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
  
  Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the below link to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
 
+**Note**: Running this template replaces previous files in the Function App, if updated file versions are available. To ensure that the file deployment is successful, we recommend that you stop the Function App before you run this template. After the template finishes running, you can start the Function App.
+
  [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri/https%3A%2F%2Fstartstopv2prod.blob.core.windows.net%2Fartifacts%2Fssv2autoupdateff.json)
-  
+ 
 <p>
-  
+
 # Enable Multi-Subscription Support
 After the start/stop deployment is completed, please follow the steps below to enable the feature to take action across multiple subscriptions:
 1. Copy the name of the Azure function that you had created during the deployment
