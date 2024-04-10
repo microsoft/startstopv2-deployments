@@ -47,6 +47,17 @@ After the start/stop deployment is completed, please follow the steps below to e
 1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
 1. Click the <b>Save</b> button
 
+# Upcoming or recent updates to Start/Stop V2
+ 
+Start/Stop V2 currently runs on .NET 6 using the in-process Functions model.
+Before the respective retirement dates for [.NET 6](https://learn.microsoft.com/azure/azure-functions/supported-languages?tabs=isolated-process%2Cv4&pivots=programming-language-csharp#languages-by-runtime-version) support and [in-process](https://learn.microsoft.com/azure/azure-functions/migrate-dotnet-to-isolated-model?tabs=net8) support, we are planning to update Start/Stop V2 so that it remains on supported versions. No dates are confirmed yet for making the new .NET version or isolated process updates available for Start/Stop V2, but we will update this page once these updates are available.
+ 
+**February 13, 2024**
+Workspace-based Application insights is now available for Start/Stop v2
+ 
+## Updating Start/Stop v2
+To update an existing  Start/Stop v2 solution that you deployed, you can run the TriggerAutoUpdate Function either manually or let it run automatically on schedule. By default, it runs daily.
+
 # Known issues
 - The CostAnalyticsFunction and SavingsAnalyticsFunction functions might return failures such as 429 Too Many Requests errors. There is no ETA for fixing this issue, but this function does not impact the functionality of the Start/Stop V2 solution. This function is used by Microsoft to estimate aggregate savings of Start/Stop V2 across customers.
 
