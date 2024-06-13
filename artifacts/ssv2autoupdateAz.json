@@ -1,0 +1,123 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azureFunctionAppName": {
+      "type": "string",
+      "minLength": 2,
+      "metadata": {
+        "description": "The name of the Azure Function App that will perform the action on the VM(s). This Function App name MUST be globally unique, contain ONLY alphanumeric characters or hyphens (and can NOT start or end with a hyphen), and the length of the name MUST be less than 46 characters."
+      }
+    },
+    "applicationInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Application Insights instance that will hold the analytics for Start/Stop."
+      }
+    },
+    "applicationInsightsRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The region where the Application Insights instance for Start/Stop Analytics will be located."
+      }
+    },
+    "storageAccountName": {
+      "type": "String",
+      "minLength": 3,
+      "metadata": {
+        "description": "The name of the storage account for Start/Stop execution data logging. Name MUST be globally unique and contain only lowercase letters and numbers. Length of the name MUST be less than 18 characters.Steven"
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "defaultValue": "ststv2Workspace",
+      "metadata": {
+        "description": "The name of the log analytics workspace instance that will store all future ingested Application Insights telemetry for Start/Stop. Name must be unique per resource group."
+      }
+    },
+    "workspaceRegion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The region where the Log Analytics workspace for Start/Stop will be located."
+      }
+    }
+  },
+  "variables": {
+    "_artifactsLocation": "https://startstopv2prod.blob.core.windows.net/artifacts",
+    "nestedTemplates": {
+      "StartStopV2_Automationga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdateAz.json')]",
+      "StartStopV2_AzDashboardga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
+    },
+    "resourceGroupName": "[resourceGroup().name]",
+    "resourceGroupRegion": "[resourceGroup().location]",
+    "azureCloudEnvironment": "AzureGlobalCloud",
+    "ssv2Version": "1.1.20240422.1",
+    "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "SSV2_AutomationUpdateGA",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('nestedTemplates').StartStopV2_Automationga]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "azureFunctionAppName": {
+            "value": "[parameters('azureFunctionAppName')]"
+          },
+          "applicationInsightsName": {
+            "value": "[parameters('applicationInsightsName')]"
+          },
+          "applicationInsightsRegion": {
+            "value": "[parameters('applicationInsightsRegion')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "workspaceRegion": {
+            "value": "[variables('workspaceRegion')]"
+          },
+          "azureCloudEnvironment": {
+            "value": "[variables('azureCloudEnvironment')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "SSV2_AzDashboardUpdateGA",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "dependsOn": [
+        "SSV2_AutomationUpdateGA"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('nestedTemplates').StartStopV2_AzDashboardga]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appInsightName": {
+            "value": "[parameters('applicationInsightsName')]"
+          },
+          "appInsightRegion": {
+            "value": "[parameters('applicationInsightsRegion')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

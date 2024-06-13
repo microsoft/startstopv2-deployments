@@ -1,0 +1,834 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appInsightName": {
+      "type": "string",
+      "metadata": {
+        "Description": "Name of AppInsight"
+      }
+    },
+    "appInsightRegion": {
+      "type": "string",
+      "metadata": {
+        "Description": "Region of AppInsight"
+      }
+    }
+  },
+  "variables": {
+    "DashboardName": "StartStopV2_Dashboard",
+    "Components_Externalid": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/microsoft.insights/components/',parameters('appInsightName'))]"
+    
+  },
+    "resources": [
+      {
+        "type": "Microsoft.Portal/dashboards",
+        "apiVersion": "2019-01-01-preview",
+        "name": "[variables('DashboardName')]",
+        "location": "[parameters('appInsightRegion')]",
+        "tags": {
+          "hidden-title": "StartStopV2_Dashboard",
+          "SolutionName": "StartStopV2"
+        },
+        "properties": {
+          "lenses": {
+            "0": {
+              "order": 0,
+              "parts": {
+                "0": {
+                  "position": {
+                    "x": 0,
+                    "y": 0,
+                    "colSpan": 3,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [],
+                    "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                    "settings": {
+                      "content": {
+                        "settings": {
+                          "content": "[concat('This is your StartStop VMs dashboard.\n\nFor more information view [doc](https://github.com/microsoft/startstopv2-deployments/blob/main/README.md)\n\n**Deployment information**\n> **Subscription :** ', subscription().displayName, '  \n> **Resource Group :** ',resourceGroup().name, '  \n> **Application Insights :** ', parameters('appInsightName'))]",
+                          "title": "Welcome!",
+                          "subtitle": "",
+                          "markdownSource": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                "1": {
+                  "position": {
+                    "x": 3,
+                    "y": 0,
+                    "colSpan": 5,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"  
+                        }
+                      },
+                      {
+                        "name": "Query",
+                        "value": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__value,\n    timestamp\n| summarize request_count=sum(toreal(value)) by action,bin(timestamp, 1h)\n"
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "PT30M"
+                      },
+                      {
+                        "name": "Dimensions",
+                        "value": {
+                          "xAxis": {
+                            "name": "timestamp",
+                            "type": "datetime"
+                          },
+                          "yAxis": [
+                            {
+                              "name": "request_count",
+                              "type": "real"
+                            }
+                          ],
+                          "splitBy": [
+                            {
+                              "name": "action",
+                              "type": "string"
+                            }
+                          ],
+                          "aggregation": "Sum"
+                        }
+                      },
+                      {
+                        "name": "Version",
+                        "value": "1.0"
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "1873282b-e618-432b-8147-bd0cfb34cf73"
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "Successful Start and Stop Actions Taken"
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Total count of successful start and stop actions taken against your virtual machines by the StartStop service."
+                      },
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components"
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "FrameControlChart"
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "value": "UnstackedColumn"
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {
+                      "content": {
+                        "Query": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__Value,\n    timestamp\n| summarize request_count=sum(toreal(value)) by action,bin(timestamp, 1h)\n\n",
+                        "LegendOptions": {
+                          "isEnabled": true,
+                          "position": "Bottom"
+                        }
+                      }
+                    }
+                  }
+                },
+                "2": {
+                  "position": {
+                    "x": 8,
+                    "y": 0,
+                    "colSpan": 5,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "1873282b-e618-432b-8147-bd0cfb34cf73",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Version",
+                        "value": "1.0",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "PT30M",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Query",
+                        "value": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__Value,\n    timestamp, \n    OperationReferenceId = tostring(customDimensions.prop__OperationReferenceId),\n    ResourceCorrelationId = tostring(customDimensions.prop__ResourceCorrelationId),\n    VMName = tostring(customDimensions.prop__ResourceName),\n    Status = tobool(customDimensions.prop__Successful)\n| summarize arg_max(timestamp, VMName, action, Status) by OperationReferenceId, ResourceCorrelationId\n| project-reorder timestamp, VMName, action, Status, OperationReferenceId, ResourceCorrelationId\n| where Status == false\n\n",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "FrameControlChart",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "value": "UnstackedColumn",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "Failed Start and Stop Actions Taken",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Total count of failed start and stop actions taken against your virtual machines by the StartStop service.",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Dimensions",
+                        "value": {
+                          "xAxis": {
+                            "name": "timestamp",
+                            "type": "datetime"
+                          },
+                          "yAxis": [
+                            {
+                              "name": "request_count",
+                              "type": "real"
+                            }
+                          ],
+                          "splitBy": [
+                            {
+                              "name": "action",
+                              "type": "string"
+                            }
+                          ],
+                          "aggregation": "Sum"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {
+                      "content": {
+                        "Query": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__Value,\n    timestamp, \n    OperationReferenceId = tostring(customDimensions.prop__OperationReferenceId),\n    ResourceCorrelationId = tostring(customDimensions.prop__ResourceCorrelationId),\n    VMName = tostring(customDimensions.prop__ResourceName),\n    Status = tobool(customDimensions.prop__Successful)\n| summarize arg_max(timestamp, VMName, action, Status) by OperationReferenceId, ResourceCorrelationId\n| project-reorder timestamp, VMName, action, Status, OperationReferenceId, ResourceCorrelationId\n| where Status == false\n\n",
+                        "ControlType": "AnalyticsGrid",
+                        "PartTitle": "Failed Start and Stop Actions Taken",
+                        "PartSubTitle": "Total count of failed start and stop actions taken against your virtual machines by the StartStop service.",
+                        "LegendOptions": {
+                          "isEnabled": true,
+                          "position": "Bottom"
+                        }
+                      }
+                    }
+                  }
+                },
+                "3": {
+                  "position": {
+                    "x": 0,
+                    "y": 4,
+                    "colSpan": 9,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "Version",
+                        "value": "1.0"
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "15b42e68-24a8-4715-ae79-067f634ce119"
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "Recently attempted actions on VMs"
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Virtual machines which recently had a start or stop action attempted."
+                      },
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"
+                        }
+                      },
+                      {
+                        "name": "Query",
+                        "value": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project      \n  action = customDimensions.prop__ActionType,\n  virtual_machine = customDimensions.prop__ResourceName,\n  resource_group = customDimensions.prop__ResourceGroup,\n  subscription_ID = customDimensions.prop__SubscriptionId,\n  timestamp\n| order by timestamp desc\n"
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "P1D"
+                      },
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components"
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "AnalyticsGrid"
+                      },
+                      {
+                        "name": "Dimensions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {},
+                    "asset": {
+                      "idInputName": "ComponentId",
+                      "type": "ApplicationInsights"
+                    }
+                  }
+                },
+                "4": {
+                  "position": {
+                    "x": 9,
+                    "y": 4,
+                    "colSpan": 4,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Dimensions",
+                        "value": {
+                          "xAxis": {
+                            "name": "action",
+                            "type": "string"
+                          },
+                          "yAxis": [
+                            {
+                              "name": "request_count",
+                              "type": "real"
+                            }
+                          ],
+                          "splitBy": [],
+                          "aggregation": "Sum"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Query",
+                        "value": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = toreal(customDimensions.prop__value),\n    timestamp\n| summarize request_count=sum(value) by action,bin(timestamp, 1h)\n",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "Start & Stop (%)",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Total % count of start and stop action",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "08ad6984-455d-440c-9596-73760a4178c3",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Version",
+                        "value": "1.0",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "P30D",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "FrameControlChart",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "value": "Donut",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {
+                      "content": {
+                        "Query": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = toreal(customDimensions.prop__Value),\n    timestamp\n| summarize request_count=sum(value) by action,bin(timestamp, 1h)\n\n",
+                        "LegendOptions": {
+                          "isEnabled": true,
+                          "position": "Bottom"
+                        }
+                      }
+                    }
+                  }
+                },
+                "5": {
+                  "position": {
+                    "x": 0,
+                    "y": 8,
+                    "colSpan": 6,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"
+                        }
+                      },
+                      {
+                        "name": "Query",
+                        "value": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__value),      timestamp)\n| summarize request_count=sum(value) by scenario,bin(timestamp, 15m)\n"
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "PT1H"
+                      },
+                      {
+                        "name": "Dimensions",
+                        "value": {
+                          "xAxis": {
+                            "name": "timestamp",
+                            "type": "datetime"
+                          },
+                          "yAxis": [
+                            {
+                              "name": "request_count",
+                              "type": "real"
+                            }
+                          ],
+                          "splitBy": [
+                            {
+                              "name": "scenario",
+                              "type": "string"
+                            }
+                          ],
+                          "aggregation": "Sum"
+                        }
+                      },
+                      {
+                        "name": "Version",
+                        "value": "1.0"
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "1b21d06a-2b57-4d5a-b912-1fe272b12de9"
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "StartStop Scenarios"
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Count of recently executed schedules, sequenced, and auto stop scenarios."
+                      },
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components"
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "FrameControlChart"
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "value": "StackedColumn"
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {
+                      "content": {
+                        "Query": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| summarize request_count=sum(value) by scenario,bin(timestamp, 15m)\n\n",
+                        "LegendOptions": {
+                          "isEnabled": true,
+                          "position": "Bottom"
+                        }
+                      }
+                    }
+                  }
+                },
+                "6": {
+                  "position": {
+                    "x": 6,
+                    "y": 8,
+                    "colSpan": 4,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Dimensions",
+                        "value": {
+                          "xAxis": {
+                            "name": "scenario",
+                            "type": "string"
+                          },
+                          "yAxis": [
+                            {
+                              "name": "request_count",
+                              "type": "real"
+                            }
+                          ],
+                          "splitBy": [],
+                          "aggregation": "Sum"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Query",
+                        "value": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__value),      timestamp)\n| summarize request_count=sum(value) by scenario\n",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "Count by Scenarios",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Count of recently executed Scenarios",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "7c4418b6-9831-46ae-b5d9-5c6b611ae16f",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Version",
+                        "value": "1.0",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "P30D",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "FrameControlChart",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "value": "Donut",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {
+                      "content": {
+                        "Query": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| summarize request_count=sum(value) by scenario\n\n",
+                        "LegendOptions": {
+                          "isEnabled": true,
+                          "position": "Bottom"
+                        }
+                      }
+                    }
+                  }
+                },
+                "7": {
+                  "position": {
+                    "x": 10,
+                    "y": 8,
+                    "colSpan": 3,
+                    "rowSpan": 4
+                  },
+                  "metadata": {
+                    "inputs": [
+                      {
+                        "name": "ComponentId",
+                        "value": {
+                          "SubscriptionId": "[subscription().subscriptionId]",
+                          "ResourceGroup": "[resourceGroup().name]",
+                          "Name": "[parameters('appInsightName')]",
+                          "ResourceId": "[variables('Components_Externalid')]"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Dimensions",
+                        "value": {
+                          "xAxis": {
+                            "name": "resource_group",
+                            "type": "string"
+                          },
+                          "yAxis": [
+                            {
+                              "name": "count_",
+                              "type": "long"
+                            }
+                          ],
+                          "splitBy": [],
+                          "aggregation": "Sum"
+                        },
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Query",
+                        "value": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project  resource_group = tostring(customDimensions.prop__ResourceGroup)\n| summarize count() by resource_group\n",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartTitle",
+                        "value": "Count by Resource Group",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartSubTitle",
+                        "value": "Resource Groups which recently had a start or stop action",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "PartId",
+                        "value": "2aef6442-2811-49df-b349-d58e1d868ab5",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Version",
+                        "value": "1.0",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "resourceTypeMode",
+                        "value": "components",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "TimeRange",
+                        "value": "P30D",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DashboardId",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "ControlType",
+                        "value": "FrameControlChart",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "SpecificChart",
+                        "value": "Donut",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "Scope",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "DraftRequestParameters",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "LegendOptions",
+                        "isOptional": true
+                      },
+                      {
+                        "name": "IsQueryContainTimeRange",
+                        "isOptional": true
+                      }
+                    ],
+                    "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
+                    "settings": {}
+                  }
+                }
+              }
+            }
+          },
+          "metadata": {
+            "model": {}
+          }
+        }
+      }
+    ]
+}
