@@ -31,18 +31,19 @@
             "metadata": { "description": "The region where the Log Analytics workspace for Start/Stop will be located." }
         }
     },
-    "variables": {
-        "_artifactsLocation": "https://startstopv2prod.blob.core.windows.net/artifacts",
-        "nestedTemplates": {
-            "StartStopV2_Automationga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdate.json')]",
-            "StartStopV2_AzDashboardga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
-        },
-        "resourceGroupName": "[resourceGroup().name]",
-        "resourceGroupRegion": "[resourceGroup().location]",
-        "azureCloudEnvironment": "AzureGlobalCloud",
-        "ssv2Version": "1.1.20240422.1",
-        "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
+  "variables": {
+    //Todo: Update the artifacts location to the main branch while merging the PR
+    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/tree/users/snehanegi/features/artifacts",
+    "nestedTemplates": {
+      "StartStopV2_Automationga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdate.json')]",
+      "StartStopV2_AzDashboardga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
     },
+    "resourceGroupName": "[resourceGroup().name]",
+    "resourceGroupRegion": "[resourceGroup().location]",
+    "azureCloudEnvironment": "AzureGlobalCloud",
+    "ssv2Version": "1.1.20240422.1",
+    "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
+  },
     "resources": [
         {
             "type": "Microsoft.Resources/deployments",
