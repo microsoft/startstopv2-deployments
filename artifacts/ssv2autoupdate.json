@@ -33,7 +33,7 @@
     },
   "variables": {
     //Todo: Update the artifacts location to the main branch while merging the PR
-    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/tree/users/snehanegi/features/artifacts",
+    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts",
     "nestedTemplates": {
       "StartStopV2_Automationga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdate.json')]",
       "StartStopV2_AzDashboardga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
