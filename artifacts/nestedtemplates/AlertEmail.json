@@ -1,0 +1,194 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {    
+    "Email Addresses": {
+      "type": "string",
+      "defaultValue": "xlkjciekc321c3@microsoft.com",
+      "metadata": {
+        "description": "Enter the recipients of the email.  Seperate names by using comma(,).",
+        "category": "Email Functionality"
+      }
+    },
+    "appInsightName": {
+      "type": "string",
+      "metadata": {
+        "Description": "Name of AppInsight"
+      }
+    },
+    "appInsightRegion": {
+      "type": "string",
+      "metadata": {
+        "Description": "Region of AppInsight"
+      }
+    }
+  },
+  "variables": {
+    "emailSplit": "[split(parameters('Email Addresses'),',')]",
+    "actionGroupName": "StartStopV2_VM_Notification",
+    "actionGroupShortName": "StStAlertV2",
+    "alertArray": [
+      {
+        "alertLocation": "[parameters('appInsightRegion')]",
+        "alertName": "ScheduledStartStop_AzFunc",
+        "alertTag": "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightName')))]",
+        "alertDescription": "Start/Stop VMs during off-hours : Scheduled azure function has attempted an action",
+        "alertStatus": "true",
+        "alertSource": {
+          "Query": "traces\n| where (operation_Name contains \"Scheduled\")\n| where ( message hasprefix \"~Scheduled\" )\n| extend output = substring(message,1)\n| summarize by message, output\n| project output",
+          "SourceId": "[resourceId('Microsoft.Insights/components',parameters('appInsightName'))]",
+          "Type": "ResultCount"
+        },
+        "alertSchedule": {
+          "Frequency": 5,
+          "Time": 5
+        },
+        "alertActions": {
+          "SeverityLevel": "4"
+        },
+        "alertTrigger": {
+          "Operator": "GreaterThan",
+          "Threshold": "0"
+        },
+        "actionGrp": {
+          "ActionGroup": "[resourceId('Microsoft.Insights/actionGroups',variables('actionGroupName'))]",
+          "Subject": "Start/Stop VMs during off-hours : Scheduled azure function has attempted an action"
+        }
+      },
+      {
+        "alertLocation": "[parameters('appInsightRegion')]",
+        "alertName": "SequencedStartStop_AzFunc",
+        "alertTag": "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightRegion')))]",
+        "alertDescription": "Start/Stop VMs during off-hours : Sequenced azure function has attempted an action",
+        "alertStatus": "true",
+        "alertSource": {
+          "Query": "traces\n| where (operation_Name contains \"Scheduled\")\n| where ( message hasprefix \"~Sequenced\" )\n| extend output = substring(message,1)\n| summarize by message, output\n| project output",
+          "SourceId": "[resourceId('Microsoft.Insights/components',parameters('appInsightName'))]",
+          "Type": "ResultCount"
+        },
+        "alertSchedule": {
+          "Frequency": 5,
+          "Time": 5
+        },
+        "alertActions": {
+          "SeverityLevel": "4"
+        },
+        "alertTrigger": {
+          "Operator": "GreaterThan",
+          "Threshold": "0"
+        },
+        "actionGrp": {
+          "ActionGroup": "[resourceId('Microsoft.Insights/actionGroups',variables('actionGroupName'))]",
+          "Subject": "Start/Stop VMs during off-hours : Sequenced azure function has attempted an action"
+        }
+      },
+      {
+        "alertLocation": "[parameters('appInsightRegion')]",
+        "alertName": "AutoStop_VM_AzFunc",
+        "alertTag": "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightRegion')))]",
+        "alertDescription": "Start/Stop VMs during off-hours : AutoStop azure function has attempted an action",
+        "alertStatus": "true",
+        "alertSource": {
+          "Query": "traces\n| where (operation_Name contains \"AutoStop\")\n| where ( message hasprefix \"~AutoStop\" )\n| extend output = substring(message,1)\n| summarize by message, output\n| project output",
+          "SourceId": "[resourceId('Microsoft.Insights/components',parameters('appInsightName'))]",
+          "Type": "ResultCount"
+        },
+        "alertSchedule": {
+          "Frequency": 5,
+          "Time": 5
+        },
+        "alertActions": {
+          "SeverityLevel": "4"
+        },
+        "alertTrigger": {
+          "Operator": "GreaterThan",
+          "Threshold": "0"
+        },
+        "actionGrp": {
+          "ActionGroup": "[resourceId('Microsoft.Insights/actionGroups',variables('actionGroupName'))]",
+          "Subject": "Start/Stop VMs during off-hours : AutoStop azure function has attempted an action"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/actionGroups",
+      "apiVersion": "2018-09-01",
+      "name": "[variables('actionGroupName')]",
+      "location": "Global",
+      "properties": {
+        "groupShortName": "[variables('actionGroupShortName')]",
+        "enabled": true,
+        "copy": [
+          {
+            "name": "emailReceivers",
+            "count": "[length(variables('emailSplit'))]",
+            "input": {
+              "emailAddress": "[variables('emailSplit')[copyIndex('emailReceivers')]]",
+              "name": "[concat('Email', uniqueString(string(copyIndex('emailReceivers'))))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('alertArray')[copyIndex()].alertName]",
+      "type": "Microsoft.Insights/scheduledQueryRules",
+      "apiVersion": "2018-04-16",
+      "location": "[variables('alertArray')[copyIndex()].alertLocation]",
+      "tags": { "[variables('alertArray')[copyIndex()].alertTag]": "Resource" },
+      "copy": {
+        "name": "alertLoop",
+        "count": "[length(variables('alertArray'))]"
+      },
+      "properties": {
+        "description": "[variables('alertArray')[copyIndex()].alertDescription]",
+        "enabled": "[variables('alertArray')[copyIndex()].alertStatus]",
+        "source": {
+          "query": "[variables('alertArray')[copyIndex()].alertSource.Query]",
+          "dataSourceId": "[variables('alertArray')[copyIndex()].alertSource.SourceId]",
+          "queryType": "[variables('alertArray')[copyIndex()].alertSource.Type]"
+        },
+        "schedule": {
+          "frequencyInMinutes": "[variables('alertArray')[copyIndex()].alertSchedule.Frequency]",
+          "timeWindowInMinutes": "[variables('alertArray')[copyIndex()].alertSchedule.Time]"
+        },
+        "action": {
+          "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction",
+          "severity": "[variables('alertArray')[copyIndex()].alertActions.SeverityLevel]",
+          "aznsAction": {
+            "actionGroup": "[array(variables('alertArray')[copyIndex()].actionGrp.ActionGroup)]",
+            "emailSubject": "[variables('alertArray')[copyIndex()].actionGrp.Subject]"
+          },
+          "trigger": {
+            "thresholdOperator": "[variables('alertArray')[copyIndex()].alertTrigger.Operator]",
+            "threshold": "[variables('alertArray')[copyIndex()].alertTrigger.Threshold]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "resID": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/components',parameters('appInsightName'))]"
+    },
+    "actiongroup": {
+      "type": "string",
+      "value": "[variables('alertArray')[0].actionGrp.ActionGroup]"
+    },
+    "alertTag": {
+      "type": "string",
+      "value": "[concat('hidden-link:', resourceId('Microsoft.Insights/components',parameters('appInsightName')))]"
+    },
+    "subID": {
+      "type": "string",
+      "value": "[subscription().subscriptionId]"
+    },
+    "subscriptionOutput": {
+      "value": "[subscription()]",
+      "type": "object"
+    }
+  }
+}

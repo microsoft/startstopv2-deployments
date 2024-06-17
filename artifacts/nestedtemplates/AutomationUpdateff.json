@@ -1,0 +1,455 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azureFunctionAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Function App that will perform the action on the VM(s)."
+      }
+    },
+    "applicationInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Application Insights instance that will hold the analytics for Start/Stop."
+      }
+    },
+    "applicationInsightsRegion": {
+      "type": "string",
+      "defaultValue": "usgovvirginia",
+      "metadata": {
+        "description": "The region where the Application Insights instance for Start/Stop Analytics will be located."
+      }
+    },
+    "storageAccountName": {
+      "type": "String",
+      "metadata": {
+        "description": "The name of the storage account for Start/Stop execution data logging."
+      }
+    },
+    "workspaceName": {
+      "type": "String",
+      "metadata": {
+        "description": "The name of the Log Analytics workspace for Start/Stop execution data logging."
+      }
+    },
+    "workspaceRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The region where the Log Analytics workspace for Start/Stop will be located."
+      }
+    },
+    "azureCloudEnvironment": {
+      "type": "string",
+      "defaultValue": "AzureUSGovernment",
+      "allowedValues": [
+        "AzureGlobalCloud",
+        "AzureUSGovernment"
+      ],
+      "metadata": {
+        "description": "Azure Environment."
+      }
+    }
+  },
+  "variables": {
+    "storageAccountName": "[toLower(parameters('storageAccountName'))]",
+    "workspaceName": "[toLower(parameters('workspaceName'))]",
+    "workspaceResourceId": "[concat(resourceGroup().id,'/providers/','Microsoft.OperationalInsights/workspaces/', variables('workspaceName'))]",
+    "functionAppNameStartStopV2": "[parameters('azureFunctionAppName')]",
+    "hostingPlanName": "[concat(variables('functionAppNameStartStopV2'),'-plan')]",
+    "applicationInsightsName": "[parameters('applicationInsightsName')]",
+    "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+    "functionWorkerRuntime": "dotnet",
+    "Functionpackage": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/StartStopV2.zip",
+    "StorageTableDefault": "[concat(variables('storageAccountName'),'/default')]",
+    "StorageTableName": "[concat(variables('StorageTableDefault'),'/requeststoretable')]",
+    "StorageQueueDefault": "[concat(variables('storageAccountName'),'/default')]",
+    "SubscriptionRequestStoreTable": "[concat(variables('StorageTableDefault'),'/subscriptionrequeststoretable')]",
+    "StorageTableName_AutoUpdate": "[concat(variables('StorageTableDefault'),'/autoupdaterequestdetailsstoretable')]",
+    "StorageQueueName_SavingsReq": "[concat(variables('StorageQueueDefault'),'/savings-request-queue')]",
+    "StorageQueueName_ExecReq": "[concat(variables('StorageQueueDefault'),'/execution-request')]",
+    "StorageQueueName_OrchReq": "[concat(variables('StorageQueueDefault'),'/orchestration-request')]",
+    "StorageQueueName_CreaReq": "[concat(variables('StorageQueueDefault'),'/create-alert-request')]",
+    "StorageQueueName_AutoUpdate": "[concat(variables('StorageQueueDefault'),'/auto-update-request-queue')]",
+    "AutoUpdate_ArmTemplate_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/ssv2autoupdateff.json",
+    "AutoUpdate_Regions_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/AutoUpdateRegionsFF.json",
+    "ssv2Version": "1.1.20240617.1"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "SolutionName": "StartStopV2"
+      },
+      "dependsOn": [],
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "allowBlobPublicAccess": false,
+        "minimumTlsVersion": "TLS1_2"
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Storage/storageAccounts/tableServices",
+          "apiVersion": "2019-06-01",
+          "name": "[variables('StorageTableDefault')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]"
+          ],
+          "properties": {},
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageTableName')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/tableServices/default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('SubscriptionRequestStoreTable')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/tableServices/default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageTableName_AutoUpdate')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/tableServices/default')]"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Microsoft.Storage/storageAccounts/queueServices",
+          "apiVersion": "2019-06-01",
+          "name": "[variables('StorageQueueDefault')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]"
+          ],
+          "properties": {},
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageQueueName_ExecReq')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/queueServices/default')]"
+              ],
+              "properties": {
+                "metadata": {}
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageQueueName_OrchReq')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/queueServices/default')]"
+              ],
+              "properties": {
+                "metadata": {}
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageQueueName_CreaReq')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/queueServices/default')]"
+              ],
+              "properties": {
+                "metadata": {}
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageQueueName_SavingsReq')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/queueServices/default')]"
+              ],
+              "properties": {
+                "metadata": {}
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+              "apiVersion": "2019-06-01",
+              "name": "[variables('StorageQueueName_AutoUpdate')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+                "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Storage/storageAccounts/',variables('storageAccountName'),'/queueServices/default')]"
+              ],
+              "properties": {
+                "metadata": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2018-02-01",
+      "name": "[variables('hostingPlanName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "SolutionName": "StartStopV2"
+      },
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic"
+      },
+      "properties": {
+        "name": "[variables('hostingPlanName')]",
+        "computeMode": "Dynamic"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]"
+      ]
+    },
+    {
+      "apiVersion": "2015-08-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('functionAppNameStartStopV2')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "SolutionName": "StartStopV2"
+      },
+      "kind": "functionapp",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
+      ],
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "httpsOnly": true,
+        "clientCertEnabled": true,
+        "clientCertMode": "Optional",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AzureWebJobsDisableHomepage",
+              "value": "true"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1,';EndpointSuffix=core.usgovcloudapi.net')]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1,';EndpointSuffix=core.usgovcloudapi.net')]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(variables('functionAppNameStartStopV2'))]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "~10"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsightsName')), '2015-05-01').ConnectionString]"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "[variables('functionWorkerRuntime')]"
+            },
+            {
+              "name": "AzureClientOptions:SubscriptionId",
+              "value": "[subscription().subscriptionId]"
+            },
+            {
+              "name": "AzureClientOptions:ResourceGroup",
+              "value": "[resourceGroup().name]"
+            },
+            {
+              "name": "AzureClientOptions:ResourceGroupRegion",
+              "value": "[resourceGroup().location]"
+            },
+            {
+              "name": "AzureClientOptions:FunctionAppName",
+              "value": "[variables('functionAppNameStartStopV2')]"
+            },
+            {
+              "name": "AzureClientOptions:TenantId",
+              "value": "[subscription().tenantId]"
+            },
+            {
+              "name": "AzureClientOptions:AzureEnvironment",
+              "value": "[parameters('azureCloudEnvironment')]"
+            },
+            {
+              "name": "StorageOptions:StorageAccountConnectionString",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1,';EndpointSuffix=core.usgovcloudapi.net')]"
+            },
+            {
+              "name": "StorageOptions:CreateAutoStopAlertRequestQueue",
+              "value": "create-alert-request"
+            },
+            {
+              "name": "StorageOptions:OrchestrationRequestQueue",
+              "value": "orchestration-request"
+            },
+            {
+              "name": "StorageOptions:ExecutionRequestQueue",
+              "value": "execution-request"
+            },
+            {
+              "name": "StorageOptions:SavingsRequestQueue",
+              "value": "savings-request-queue"
+            },
+            {
+              "name": "StorageOptions:AutoUpdateRequestQueue",
+              "value": "auto-update-request-queue"
+            },
+            {
+              "name": "StorageOptions:RequestStoreTable",
+              "value": "requeststoretable"
+            },
+            {
+              "name": "StorageOptions:SubscriptionRequestStoreTable",
+              "value": "subscriptionrequeststoretable"
+            },
+            {
+              "name": "StorageOptions:AutoUpdateRequestDetailsStoreTable",
+              "value": "autoupdaterequestdetailsstoretable"
+            },
+            {
+              "name": "CentralizedLoggingOptions:InstrumentationKey",
+              "value": "83c8dd52-a098-f159-879d-104768125b9f"
+            },
+            {
+              "name": "CentralizedLoggingOptions:Version",
+              "value": "[variables('ssv2Version')]"
+            },
+            {
+              "name": "AzureClientOptions:ApplicationInsightName",
+              "value": "[variables('applicationInsightsName')]"
+            },
+            {
+              "name": "AzureClientOptions:ApplicationInsightRegion",
+              "value": "[parameters('applicationInsightsRegion')]"
+            },
+            {
+              "name": "AzureClientOptions:AutoUpdateTemplateUri",
+              "value": "[variables('AutoUpdate_ArmTemplate_Uri')]"
+            },
+            {
+              "name": "AzureClientOptions:AutoUpdateRegionsUri",
+              "value": "[variables('AutoUpdate_Regions_Uri')]"
+            },
+            {
+              "name": "AzureClientOptions:StorageAccountName",
+              "value": "[variables('storageAccountName')]"
+            },
+            {
+              "name": "AzureClientOptions:Version",
+              "value": "[variables('ssv2Version')]"
+            },
+            {
+              "name": "AzureClientOptions:EnableAutoUpdate",
+              "value": "true"
+            },
+            {
+              "name": "MSDEPLOY_RENAME_LOCKED_FILES",
+              "value": "1"
+            },
+            {
+              "name": "AzureClientOptions:AzEnabled",
+              "value": "false"
+            },
+            {
+              "name": "AzureClientOptions:WorkSpaceName",
+              "value": "[parameters('workspaceName')]"
+            },
+            {
+              "name": "AzureClientOptions:WorkSpaceRegion",
+              "value": "[parameters('workspaceRegion')]"
+            }
+          ],
+          "ftpsState": "FtpsOnly",
+          "netFrameworkVersion": "v6.0"
+        }
+      },
+      "resources": [
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2022-09-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('functionAppNameStartStopV2'))]"
+          ],
+          "tags": {
+            "displayName": "MSDeploy Initial Functions"
+          },
+          "properties": {
+            "packageUri": "[variables('Functionpackage')]",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {}
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[parameters('workspaceName')]",
+      "location": "[parameters('workspaceRegion')]",
+      "tags": {
+        "SolutionName": "StartStopV2"
+      }
+    },
+    {
+      "apiVersion": "2020-02-02",
+      "name": "[variables('applicationInsightsName')]",
+      "type": "microsoft.insights/components",
+      "location": "[parameters('applicationInsightsRegion')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+      ],
+      "tags": {
+        "SolutionName": "StartStopV2"
+      },
+      "properties": {
+        "ApplicationId": "[variables('applicationInsightsName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate",
+        "Application_Type": "web",
+        "WorkspaceResourceId": "[variables('workspaceResourceId')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
