@@ -67,8 +67,8 @@
           "applicationInsightsName": { "value": "[parameters('applicationInsightsName')]" },
           "applicationInsightsRegion": { "value": "[parameters('applicationInsightsRegion')]" },
           "storageAccountName": { "value": "[parameters('storageAccountName')]" },
-          "workspaceName": {  "value": "[parameters('workspaceName')]"  },
-          "workspaceRegion": {  "value": "[variables('workspaceRegion')]"  },
+          "workspaceName": { "value": "[parameters('workspaceName')]" },
+          "workspaceRegion": { "value": "[variables('workspaceRegion')]" },
           "azureCloudEnvironment": { "value": "[variables('azureCloudEnvironment')]" }
         }
       }

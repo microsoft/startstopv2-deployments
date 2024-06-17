@@ -444,7 +444,7 @@
       "tags": {
         "SolutionName": "StartStopV2"
       }
-    },     
+    },
     {
       "apiVersion": "2020-02-02",
       "name": "[variables('applicationInsightsName')]",
