@@ -229,7 +229,9 @@
         "targetWorkerSizeId": 0,
         "zoneRedundant": true
       },
-      "dependsOn": [ "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]" ]
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('storageAccountName'))]"
+      ]
     },
     {
       "apiVersion": "2015-08-01",
@@ -415,7 +417,6 @@
           "apiVersion": "2022-09-01",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('functionAppNameStartStopV2'))]"
-
           ],
           "tags": {
             "displayName": "MSDeploy Initial Functions"
@@ -424,8 +425,7 @@
             "packageUri": "[variables('Functionpackage')]",
             "dbType": "None",
             "connectionString": "",
-            "setParameters": {
-            }
+            "setParameters": {}
           }
         }
       ]
@@ -458,6 +458,5 @@
       }
     }
   ],
-  "outputs": {
-  }
+  "outputs": {}
 }
