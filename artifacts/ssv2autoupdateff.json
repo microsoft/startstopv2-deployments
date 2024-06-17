@@ -48,18 +48,18 @@
             }
         }
     },
-    "variables": {
-        "_artifactsLocation": "https://startstopv2prod.blob.core.windows.net/artifacts",
-        "nestedTemplates": {
-            "StartStopV2_Automationgov": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdateff.json')]",
-            "StartStopV2_AzDashboardgov": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
-        },
-        "resourceGroupName": "[resourceGroup().name]",
-        "resourceGroupRegion": "[resourceGroup().location]",
-        "azureCloudEnvironment": "AzureUSGovernment",
-        "ssv2Version": "1.1.20240422.1",
-        "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
+  "variables": {
+    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts",
+    "nestedTemplates": {
+      "StartStopV2_Automationgov": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdateff.json')]",
+      "StartStopV2_AzDashboardgov": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
     },
+    "resourceGroupName": "[resourceGroup().name]",
+    "resourceGroupRegion": "[resourceGroup().location]",
+    "azureCloudEnvironment": "AzureUSGovernment",
+    "ssv2Version": "1.1.20240617.1",
+    "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
+  },
     "resources": [
         {
             "type": "Microsoft.Resources/deployments",

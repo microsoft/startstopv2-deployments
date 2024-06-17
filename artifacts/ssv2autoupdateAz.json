@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "_artifactsLocation": "https://startstopv2prod.blob.core.windows.net/artifacts",
+    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts",
     "nestedTemplates": {
       "StartStopV2_Automationga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdateAz.json')]",
       "StartStopV2_AzDashboardga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
