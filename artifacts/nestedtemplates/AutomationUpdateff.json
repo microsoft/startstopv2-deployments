@@ -73,7 +73,7 @@
     "StorageQueueName_AutoUpdate": "[concat(variables('StorageQueueDefault'),'/auto-update-request-queue')]",
     "AutoUpdate_ArmTemplate_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts/ssv2autoupdateff.json",
     "AutoUpdate_Regions_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts/AutoUpdateRegionsFF.json",
-    "ssv2Version": "1.1.20240814.1"
+    "ssv2Version": "1.1.20240815.1"
   },
   "resources": [
     {
