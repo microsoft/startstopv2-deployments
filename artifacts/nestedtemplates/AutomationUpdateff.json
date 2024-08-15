@@ -399,7 +399,8 @@
             }
           ],
           "ftpsState": "FtpsOnly",
-          "netFrameworkVersion": "v8.0"
+          "netFrameworkVersion": "v8.0",
+          "use32BitWorkerProcess": false
         }
       },
       "resources": [
