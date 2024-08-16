@@ -54,7 +54,7 @@
     "applicationInsightsName": "[parameters('applicationInsightsName')]",
     "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
     "functionWorkerRuntime": "dotnet-isolated",
-    "Functionpackage": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts/StartStopV2.zip",
+    "Functionpackage": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/StartStopV2.zip",
     "StorageTableDefault": "[concat(variables('storageAccountName'),'/default')]",
     "StorageTableName": "[concat(variables('StorageTableDefault'),'/requeststoretable')]",
     "StorageQueueDefault": "[concat(variables('storageAccountName'),'/default')]",

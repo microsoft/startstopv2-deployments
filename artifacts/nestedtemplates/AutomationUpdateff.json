@@ -60,7 +60,7 @@
     "applicationInsightsName": "[parameters('applicationInsightsName')]",
     "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
     "functionWorkerRuntime": "dotnet-isolated",
-    "Functionpackage": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts/StartStopV2.zip",
+    "Functionpackage": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/StartStopV2.zip",
     "StorageTableDefault": "[concat(variables('storageAccountName'),'/default')]",
     "StorageTableName": "[concat(variables('StorageTableDefault'),'/requeststoretable')]",
     "StorageQueueDefault": "[concat(variables('storageAccountName'),'/default')]",
@@ -71,8 +71,8 @@
     "StorageQueueName_OrchReq": "[concat(variables('StorageQueueDefault'),'/orchestration-request')]",
     "StorageQueueName_CreaReq": "[concat(variables('StorageQueueDefault'),'/create-alert-request')]",
     "StorageQueueName_AutoUpdate": "[concat(variables('StorageQueueDefault'),'/auto-update-request-queue')]",
-    "AutoUpdate_ArmTemplate_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts/ssv2autoupdateff.json",
-    "AutoUpdate_Regions_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts/AutoUpdateRegionsFF.json",
+    "AutoUpdate_ArmTemplate_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/ssv2autoupdateff.json",
+    "AutoUpdate_Regions_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/AutoUpdateRegionsFF.json",
     "ssv2Version": "1.1.20240815.1"
   },
   "resources": [
