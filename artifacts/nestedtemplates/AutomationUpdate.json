@@ -53,7 +53,7 @@
     "hostingPlanName": "[concat(variables('functionAppNameStartStopV2'),'-plan')]",
     "applicationInsightsName": "[parameters('applicationInsightsName')]",
     "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-    "functionWorkerRuntime": "dotnet",
+    "functionWorkerRuntime": "dotnet-isolated",
     "Functionpackage": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/StartStopV2.zip",
     "StorageTableDefault": "[concat(variables('storageAccountName'),'/default')]",
     "StorageTableName": "[concat(variables('StorageTableDefault'),'/requeststoretable')]",
@@ -67,7 +67,7 @@
     "StorageQueueName_AutoUpdate": "[concat(variables('StorageQueueDefault'),'/auto-update-request-queue')]",
     "AutoUpdate_ArmTemplate_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/ssv2autoupdate.json",
     "AutoUpdate_Regions_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/AutoUpdateRegionsGA.json",
-    "ssv2Version": "1.1.20240617.1"
+    "ssv2Version": "1.1.20240816.1"
   },
   "resources": [
     {
@@ -393,7 +393,8 @@
             }
           ],
           "ftpsState": "FtpsOnly",
-          "netFrameworkVersion": "v6.0"
+          "netFrameworkVersion": "v8.0",
+          "use32BitWorkerProcess":  false
         }
       },
       "resources": [
