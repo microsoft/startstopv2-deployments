@@ -419,7 +419,8 @@
             "packageUri": "[variables('Functionpackage')]",
             "dbType": "None",
             "connectionString": "",
-            "setParameters": {}
+            "setParameters": {},
+            "appOffline": true
           }
         }
       ]
