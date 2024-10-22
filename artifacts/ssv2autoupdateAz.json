@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts",
+    "_artifactsLocation": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/users/snehanegi/features/artifacts",
     "nestedTemplates": {
       "StartStopV2_Automationga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AutomationUpdateAz.json')]",
       "StartStopV2_AzDashboardga": "[concat(variables('_artifactsLocation'), '/nestedtemplates/AzDashboard.json')]"
@@ -52,7 +52,7 @@
     "resourceGroupName": "[resourceGroup().name]",
     "resourceGroupRegion": "[resourceGroup().location]",
     "azureCloudEnvironment": "AzureGlobalCloud",
-    "ssv2Version": "1.1.20240816.1",
+    "ssv2Version": "1.1.20241022.1",
     "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
   },
   "resources": [
