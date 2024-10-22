@@ -8,21 +8,35 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
 
 # Global Azure
 
+ By default, StartStopV2 is selected in the Plan drop-down and this template deploys a Function App Consumption plan and a locally redundant Storage account as part of the solution. If you select StartStopV2-AZ in the Plan drop-down, the template deploys an availability zone-enabled Function App Elastic Premium plan running on 3 instances minimim instances and a zone-redundant Storage account as part of the solution.
+
 <a href="https://portal.azure.com/#create/microsoftcorporation1620879115842.startstopv2startstopv2-08252021" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
 
 ### Get Latest Version (Existing Users)
  
- Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the below link to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
+ Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the relevant link below to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
 
 **Note**: Running this template replaces previous files in the Function App, if updated file versions are available. To ensure that the file deployment is successful, we recommend that you stop the Function App before you run this template. After the template finishes running, you can start the Function App.
 
-[![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fstartstopv2-deployments%2Fmain%2Fartifacts%2Fssv2autoupdate.json)
+#### Non-availability zone-based solution
+
+ If you originally deployed the solution using the default Plan selection, a Function App Consumption plan and a locally redundant Storage account are deployed. In this case, use this template.
+ 
+ [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fstartstopv2-deployments%2Fmain%2Fartifacts%2Fssv2autoupdate.json)
+
+#### Availability zone-based solution
+
+ If you originally deployed the solution using the **StartStopV2-AZ** Plan selection, a Function App Elastic Premium plan and a zone-redundant Storage account are deployed. In this case, use this template.
+
+ [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fstartstopv2-deployments%2Fmain%2Fartifacts%2Fssv2autoupdateAz.json)
 
 <p>
 
 # Fairfax/USGOV
+
+ By default, StartStopV2 is selected in the Plan drop-down and this template deploys a Function App Consumption plan and a locally redundant Storage account as part of the solution. If you select StartStopV2-AZ in the Plan drop-down, the template deploys an availability zone-enabled Function App Elastic Premium plan running on 3 instances minimim instances and a zone-redundant Storage account as part of the solution.
 
 <a href="https://portal.azure.us/#create/microsoftcorporation1620879115842.startstopv2-gov-fairfaxstartstopv2gov-09012021" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
@@ -30,12 +44,22 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
 
  ### Get Latest Version (Existing Users)
  
- Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the below link to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
+ Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the relevant link below to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
 
 **Note**: Running this template replaces previous files in the Function App, if updated file versions are available. To ensure that the file deployment is successful, we recommend that you stop the Function App before you run this template. After the template finishes running, you can start the Function App.
 
+#### Non-availability zone-based solution
+
+ If you originally deployed the solution using the default Plan selection, a Function App Consumption plan and a locally redundant Storage account are deployed. In this case, use this template.
+
  [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fstartstopv2-deployments%2Fmain%2Fartifacts%2Fssv2autoupdateff.json)
- 
+
+#### Availability zone-based solution
+
+ If you originally deployed the solution using the **StartStopV2-AZ** Plan selection, a Function App Elastic Premium plan and a zone-redundant Storage account are deployed. In this case, use this template.
+
+ [![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.us/?microsoft_azure_marketplace_itemhidekey=cuidCustomDeployment#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fstartstopv2-deployments%2Fmain%2Fartifacts%2Fssv2autoupdateffAz.json)
+
 <p>
 
 # Enable Multi-Subscription Support
