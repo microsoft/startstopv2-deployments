@@ -57,7 +57,7 @@
     "resourceGroupName": "[resourceGroup().name]",
     "resourceGroupRegion": "[resourceGroup().location]",
     "azureCloudEnvironment": "AzureUSGovernment",
-    "ssv2Version": "1.1.20240816.1",
+    "ssv2Version": "1.1.20241024.1",
     "workSpaceRegion": "[if(empty(parameters('workspaceRegion')), resourceGroup().location, parameters('workspaceRegion'))]"
   },
   "resources": [
