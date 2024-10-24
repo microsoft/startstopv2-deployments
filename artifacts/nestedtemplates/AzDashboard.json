@@ -76,7 +76,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__value,\n    timestamp\n| summarize request_count=sum(toreal(value)) by action,bin(timestamp, 1h)\n"
+                      "value": "customMetrics \n| where name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value,\n    timestamp\n| summarize request_count=sum(toreal(value)) by action,bin(timestamp, 1h)\n"
                     },
                     {
                       "name": "TimeRange",
@@ -156,7 +156,7 @@
                   "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
                   "settings": {
                     "content": {
-                      "Query": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__Value,\n    timestamp\n| summarize request_count=sum(toreal(value)) by action,bin(timestamp, 1h)\n\n",
+                      "Query": "customMetrics \n| where name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value,\n    timestamp\n| summarize request_count=sum(toreal(value)) by action,bin(timestamp, 1h)\n\n",
                       "LegendOptions": {
                         "isEnabled": true,
                         "position": "Bottom"
@@ -218,7 +218,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__Value,\n    timestamp, \n    OperationReferenceId = tostring(customDimensions.prop__OperationReferenceId),\n    ResourceCorrelationId = tostring(customDimensions.prop__ResourceCorrelationId),\n    VMName = tostring(customDimensions.prop__ResourceName),\n    Status = tobool(customDimensions.prop__Successful)\n| summarize arg_max(timestamp, VMName, action, Status) by OperationReferenceId, ResourceCorrelationId\n| project-reorder timestamp, VMName, action, Status, OperationReferenceId, ResourceCorrelationId\n| where Status == false\n\n",
+                      "value": "customMetrics \n| where name == \"VmExecutionsAttempted\"\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value,\n    timestamp, \n    OperationReferenceId = tostring(customDimensions.prop__OperationReferenceId),\n    ResourceCorrelationId = tostring(customDimensions.prop__ResourceCorrelationId),\n    VMName = tostring(customDimensions.prop__ResourceName),\n    Status = tobool(customDimensions.prop__Successful)\n| summarize arg_max(timestamp, VMName, action, Status) by OperationReferenceId, ResourceCorrelationId\n| project-reorder timestamp, VMName, action, Status, OperationReferenceId, ResourceCorrelationId\n| where Status == false\n\n",
                       "isOptional": true
                     },
                     {
@@ -276,7 +276,7 @@
                   "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
                   "settings": {
                     "content": {
-                      "Query": "traces \n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = customDimensions.prop__Value,\n    timestamp, \n    OperationReferenceId = tostring(customDimensions.prop__OperationReferenceId),\n    ResourceCorrelationId = tostring(customDimensions.prop__ResourceCorrelationId),\n    VMName = tostring(customDimensions.prop__ResourceName),\n    Status = tobool(customDimensions.prop__Successful)\n| summarize arg_max(timestamp, VMName, action, Status) by OperationReferenceId, ResourceCorrelationId\n| project-reorder timestamp, VMName, action, Status, OperationReferenceId, ResourceCorrelationId\n| where Status == false\n\n",
+                      "Query": "customMetrics \n| where name == \"VmExecutionsAttempted\"\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value,\n    timestamp, \n    OperationReferenceId = tostring(customDimensions.prop__OperationReferenceId),\n    ResourceCorrelationId = tostring(customDimensions.prop__ResourceCorrelationId),\n    VMName = tostring(customDimensions.prop__ResourceName),\n    Status = tobool(customDimensions.prop__Successful)\n| summarize arg_max(timestamp, VMName, action, Status) by OperationReferenceId, ResourceCorrelationId\n| project-reorder timestamp, VMName, action, Status, OperationReferenceId, ResourceCorrelationId\n| where Status == false\n\n",
                       "ControlType": "AnalyticsGrid",
                       "PartTitle": "Failed Start and Stop Actions Taken",
                       "PartSubTitle": "Total count of failed start and stop actions taken against your virtual machines by the StartStop service.",
@@ -324,7 +324,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project      \n  action = customDimensions.prop__ActionType,\n  virtual_machine = customDimensions.prop__ResourceName,\n  resource_group = customDimensions.prop__ResourceGroup,\n  subscription_ID = customDimensions.prop__SubscriptionId,\n  timestamp\n| order by timestamp desc\n"
+                      "value": "customMetrics\n| where name == \"VmExecutionsAttempted\"\n| project      \n  action = customDimensions.prop__ActionType,\n  virtual_machine = customDimensions.prop__ResourceName,\n  resource_group = customDimensions.prop__ResourceGroup,\n  subscription_ID = customDimensions.prop__SubscriptionId,\n  timestamp\n| order by timestamp desc\n"
                     },
                     {
                       "name": "TimeRange",
@@ -414,7 +414,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = toreal(customDimensions.prop__value),\n    timestamp\n| summarize request_count=sum(value) by action,bin(timestamp, 1h)\n",
+                      "value": "customMetrics\n| where name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value,\n    timestamp\n| summarize request_count=sum(value) by action,bin(timestamp, 1h)\n",
                       "isOptional": true
                     },
                     {
@@ -481,7 +481,7 @@
                   "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
                   "settings": {
                     "content": {
-                      "Query": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value = toreal(customDimensions.prop__Value),\n    timestamp\n| summarize request_count=sum(value) by action,bin(timestamp, 1h)\n\n",
+                      "Query": "customMetrics\n| where name == \"VmExecutionsAttempted\" and customDimensions.prop__Successful == true\n| project      \n    action = tostring(customDimensions.prop__ActionType),\n    value,\n    timestamp\n| summarize request_count=sum(value) by action,bin(timestamp, 1h)\n\n",
                       "LegendOptions": {
                         "isEnabled": true,
                         "position": "Bottom"
@@ -510,7 +510,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__value),      timestamp)\n| summarize request_count=sum(value) by scenario,bin(timestamp, 15m)\n"
+                      "value": "(customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value,      timestamp)\n| union\n(customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value,      timestamp)\n| union\n(customMetrics\n| where name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value,      timestamp)\n| summarize request_count=sum(value) by scenario,bin(timestamp, 15m)\n"
                     },
                     {
                       "name": "TimeRange",
@@ -590,7 +590,7 @@
                   "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
                   "settings": {
                     "content": {
-                      "Query": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union\n(traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| summarize request_count=sum(value) by scenario,bin(timestamp, 15m)\n\n",
+                      "Query": "(customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value,      timestamp)\n| union\n(customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value,      timestamp)\n| union\n(customMetrics\n| where name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value,      timestamp)\n| summarize request_count=sum(value) by scenario,bin(timestamp, 15m)\n\n",
                       "LegendOptions": {
                         "isEnabled": true,
                         "position": "Bottom"
@@ -638,7 +638,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__value),      timestamp)\n| summarize request_count=sum(value) by scenario\n",
+                      "value": "(customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value,      timestamp)\n| union (customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value,      timestamp)\n| union (customMetrics\n| where name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value,      timestamp)\n| summarize request_count=sum(value) by scenario\n",
                       "isOptional": true
                     },
                     {
@@ -705,7 +705,7 @@
                   "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart",
                   "settings": {
                     "content": {
-                      "Query": "(traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| union (traces\n| where customDimensions.prop__Name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value = toreal(customDimensions.prop__Value),      timestamp)\n| summarize request_count=sum(value) by scenario\n\n",
+                      "Query": "(customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced)\n| project scenario = \"Sequenced\",      value,      timestamp)\n| union (customMetrics\n| where name == \"NoPiiScheduleRequests\" and tobool(customDimensions.prop__Sequenced) == false\n| project scenario = \"Scheduled\",      value,      timestamp)\n| union (customMetrics\n| where name == \"NoPiiAutoStopRequests\"\n| project scenario = \"AutoStop\",      value,      timestamp)\n| summarize request_count=sum(value) by scenario\n\n",
                       "LegendOptions": {
                         "isEnabled": true,
                         "position": "Bottom"
@@ -753,7 +753,7 @@
                     },
                     {
                       "name": "Query",
-                      "value": "traces\n| where customDimensions.prop__Name == \"VmExecutionsAttempted\"\n| project  resource_group = tostring(customDimensions.prop__ResourceGroup)\n| summarize count() by resource_group\n",
+                      "value": "customMetrics\n| where name == \"VmExecutionsAttempted\"\n| project  resource_group = tostring(customDimensions.prop__ResourceGroup)\n| summarize count() by resource_group\n",
                       "isOptional": true
                     },
                     {
