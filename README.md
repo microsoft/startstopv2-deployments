@@ -16,7 +16,7 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
 
 ### Get Latest Version (Existing Users)
  
- Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the relevant link below to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
+ Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the relevant link below to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment.
 
 **Note**: Running this template replaces previous files in the Function App, if updated file versions are available. To ensure that the file deployment is successful, we recommend that you stop the Function App before you run this template. After the template finishes running, you can start the Function App.
 
@@ -44,7 +44,7 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
 
  ### Get Latest Version (Existing Users)
  
- Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the relevant link below to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment. This is a **one-time manual effort for existing users** to get the latest version, and from there you can configure the auto-update feature to get the latest version automatically.
+ Customers who have already deployed our Start/Stop V2 solution from the marketplace can use the relevant link below to get the latest version. Please make sure you pass all the resource names correctly by referring to your existing deployment.
 
 **Note**: Running this template replaces previous files in the Function App, if updated file versions are available. To ensure that the file deployment is successful, we recommend that you stop the Function App before you run this template. After the template finishes running, you can start the Function App.
 
@@ -72,6 +72,9 @@ After the start/stop deployment is completed, please follow the steps below to e
 1. Click the <b>Save</b> button
 
 # Upcoming or recent updates to Start/Stop V2
+**October 28, 2024**
+The KQL queries in Dashboard have been updated to use the customMetrics table rather than the traces table. This update addresses missing logs that were occurring in some cases in the earlier update.
+
 **August 19, 2024**
 Start/Stop v2 has been migrated to the [.NET 8 isolated worker model](https://learn.microsoft.com/azure/azure-functions/functions-versions?tabs=isolated-process%2Cv4&pivots=programming-language-csharp#languages).
 
