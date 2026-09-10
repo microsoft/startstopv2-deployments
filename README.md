@@ -6,6 +6,12 @@ V2 User Guide: https://docs.microsoft.com/azure/azure-functions/start-stop-vms/o
 
 **Note:** Before you deploy this solution into your Azure subscription, please make sure you have **_owner_** permission at the subscription level.
 
+## Deployment permissions and storage authentication
+
+The non-availability-zone update templates create a custom role that contains only `Microsoft.Web/sites/host/listkeys/action` and assign it to the Function App managed identity at that Function App's resource scope. This permission is required by `HeartBeatAvailabilityTest`. The deployment identity therefore needs permission to create custom role definitions and role assignments, which is included in the Owner role noted above.
+
+Start/Stop V2 currently requires storage account shared-key authentication. The Function host and application package use key-based connection strings in `AzureWebJobsStorage`, `WEBSITE_CONTENTAZUREFILECONNECTIONSTRING`, and `StorageOptions__StorageAccountConnectionString`. Storage accounts used by this deployment must allow shared-key access; configurations that set `AllowSharedKeyAccess` to `false` are not supported. Replacing these connections with managed identity authentication requires application changes and is outside the scope of the deployment templates.
+
 # Global Azure
 
  By default, StartStopV2 is selected in the Plan drop-down and this template deploys a Function App Consumption plan and a locally redundant Storage account as part of the solution. If you select StartStopV2-AZ in the Plan drop-down, the template deploys an availability zone-enabled Function App Elastic Premium plan running on 3 instances minimim instances and a zone-redundant Storage account as part of the solution.
@@ -110,6 +116,12 @@ https://opensource.microsoft.com/codeofconduct
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+Validate the deployment templates before submitting changes:
+
+```powershell
+pwsh -File .\tests\Validate-DeploymentTemplates.ps1
+```
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions

@@ -73,9 +73,77 @@
     "StorageQueueName_AutoUpdate": "[concat(variables('StorageQueueDefault'),'/auto-update-request-queue')]",
     "AutoUpdate_ArmTemplate_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/ssv2autoupdateff.json",
     "AutoUpdate_Regions_Uri": "https://raw.githubusercontent.com/microsoft/startstopv2-deployments/main/artifacts/AutoUpdateRegionsFF.json",
-    "ssv2Version": "1.1.20241024.1"
+    "ssv2Version": "1.1.20241024.1",
+    "functionHostKeyReaderRoleDefinitionId": "[guid(resourceGroup().id, 'StartStopV2 Function Host Key Reader')]",
+    "functionHostKeyReaderRoleDefinitionResourceId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('functionHostKeyReaderRoleDefinitionId'))]",
+    "functionHostKeyReaderRoleAssignmentId": "[guid(resourceId('Microsoft.Web/sites', variables('functionAppNameStartStopV2')), variables('functionHostKeyReaderRoleDefinitionId'))]",
+    "functionHostKeyReaderRoleDefinitionDeploymentName": "[concat('StartStopV2_FunctionHostKeyReaderRoleDefinition_', uniqueString(resourceGroup().id))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('functionHostKeyReaderRoleDefinitionDeploymentName')]",
+      "subscriptionId": "[subscription().subscriptionId]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "parameters": {
+          "roleDefinitionId": {
+            "value": "[variables('functionHostKeyReaderRoleDefinitionId')]"
+          },
+          "roleName": {
+            "value": "[concat('StartStopV2 Function Host Key Reader ', uniqueString(resourceGroup().id))]"
+          },
+          "assignableScope": {
+            "value": "[resourceGroup().id]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "roleDefinitionId": {
+              "type": "string"
+            },
+            "roleName": {
+              "type": "string"
+            },
+            "assignableScope": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleDefinitions",
+              "apiVersion": "2022-04-01",
+              "name": "[parameters('roleDefinitionId')]",
+              "properties": {
+                "roleName": "[parameters('roleName')]",
+                "description": "Allows the Start/Stop V2 Function App to read only its own host keys for availability monitoring.",
+                "type": "customRole",
+                "permissions": [
+                  {
+                    "actions": [
+                      "Microsoft.Web/sites/host/listkeys/action"
+                    ],
+                    "notActions": [],
+                    "dataActions": [],
+                    "notDataActions": []
+                  }
+                ],
+                "assignableScopes": [
+                  "[parameters('assignableScope')]"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
@@ -286,99 +354,99 @@
               "value": "[variables('functionWorkerRuntime')]"
             },
             {
-              "name": "AzureClientOptions:SubscriptionId",
+              "name": "AzureClientOptions__SubscriptionId",
               "value": "[subscription().subscriptionId]"
             },
             {
-              "name": "AzureClientOptions:ResourceGroup",
+              "name": "AzureClientOptions__ResourceGroup",
               "value": "[resourceGroup().name]"
             },
             {
-              "name": "AzureClientOptions:ResourceGroupRegion",
+              "name": "AzureClientOptions__ResourceGroupRegion",
               "value": "[resourceGroup().location]"
             },
             {
-              "name": "AzureClientOptions:FunctionAppName",
+              "name": "AzureClientOptions__FunctionAppName",
               "value": "[variables('functionAppNameStartStopV2')]"
             },
             {
-              "name": "AzureClientOptions:TenantId",
+              "name": "AzureClientOptions__TenantId",
               "value": "[subscription().tenantId]"
             },
             {
-              "name": "AzureClientOptions:AzureEnvironment",
+              "name": "AzureClientOptions__AzureEnvironment",
               "value": "[parameters('azureCloudEnvironment')]"
             },
             {
-              "name": "StorageOptions:StorageAccountConnectionString",
+              "name": "StorageOptions__StorageAccountConnectionString",
               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1,';EndpointSuffix=core.usgovcloudapi.net')]"
             },
             {
-              "name": "StorageOptions:CreateAutoStopAlertRequestQueue",
+              "name": "StorageOptions__CreateAutoStopAlertRequestQueue",
               "value": "create-alert-request"
             },
             {
-              "name": "StorageOptions:OrchestrationRequestQueue",
+              "name": "StorageOptions__OrchestrationRequestQueue",
               "value": "orchestration-request"
             },
             {
-              "name": "StorageOptions:ExecutionRequestQueue",
+              "name": "StorageOptions__ExecutionRequestQueue",
               "value": "execution-request"
             },
             {
-              "name": "StorageOptions:SavingsRequestQueue",
+              "name": "StorageOptions__SavingsRequestQueue",
               "value": "savings-request-queue"
             },
             {
-              "name": "StorageOptions:AutoUpdateRequestQueue",
+              "name": "StorageOptions__AutoUpdateRequestQueue",
               "value": "auto-update-request-queue"
             },
             {
-              "name": "StorageOptions:RequestStoreTable",
+              "name": "StorageOptions__RequestStoreTable",
               "value": "requeststoretable"
             },
             {
-              "name": "StorageOptions:SubscriptionRequestStoreTable",
+              "name": "StorageOptions__SubscriptionRequestStoreTable",
               "value": "subscriptionrequeststoretable"
             },
             {
-              "name": "StorageOptions:AutoUpdateRequestDetailsStoreTable",
+              "name": "StorageOptions__AutoUpdateRequestDetailsStoreTable",
               "value": "autoupdaterequestdetailsstoretable"
             },
             {
-              "name": "CentralizedLoggingOptions:InstrumentationKey",
+              "name": "CentralizedLoggingOptions__InstrumentationKey",
               "value": "83c8dd52-a098-f159-879d-104768125b9f"
             },
             {
-              "name": "CentralizedLoggingOptions:Version",
+              "name": "CentralizedLoggingOptions__Version",
               "value": "[variables('ssv2Version')]"
             },
             {
-              "name": "AzureClientOptions:ApplicationInsightName",
+              "name": "AzureClientOptions__ApplicationInsightName",
               "value": "[variables('applicationInsightsName')]"
             },
             {
-              "name": "AzureClientOptions:ApplicationInsightRegion",
+              "name": "AzureClientOptions__ApplicationInsightRegion",
               "value": "[parameters('applicationInsightsRegion')]"
             },
             {
-              "name": "AzureClientOptions:AutoUpdateTemplateUri",
+              "name": "AzureClientOptions__AutoUpdateTemplateUri",
               "value": "[variables('AutoUpdate_ArmTemplate_Uri')]"
             },
             {
-              "name": "AzureClientOptions:AutoUpdateRegionsUri",
+              "name": "AzureClientOptions__AutoUpdateRegionsUri",
               "value": "[variables('AutoUpdate_Regions_Uri')]"
             },
             {
-              "name": "AzureClientOptions:StorageAccountName",
+              "name": "AzureClientOptions__StorageAccountName",
               "value": "[variables('storageAccountName')]"
             },
             {
-              "name": "AzureClientOptions:Version",
+              "name": "AzureClientOptions__Version",
               "value": "[variables('ssv2Version')]"
             },
             {
-              "name": "AzureClientOptions:EnableAutoUpdate",
+              "name": "AzureClientOptions__EnableAutoUpdate",
               "value": "true"
             },
             {
@@ -386,15 +454,15 @@
               "value": "1"
             },
             {
-              "name": "AzureClientOptions:AzEnabled",
+              "name": "AzureClientOptions__AzEnabled",
               "value": "false"
             },
             {
-              "name": "AzureClientOptions:WorkSpaceName",
+              "name": "AzureClientOptions__WorkSpaceName",
               "value": "[parameters('workspaceName')]"
             },
             {
-              "name": "AzureClientOptions:WorkSpaceRegion",
+              "name": "AzureClientOptions__WorkSpaceRegion",
               "value": "[parameters('workspaceRegion')]"
             }
           ],
@@ -423,6 +491,21 @@
           }
         }
       ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('functionHostKeyReaderRoleAssignmentId')]",
+      "scope": "[concat('Microsoft.Web/sites/', variables('functionAppNameStartStopV2'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('functionAppNameStartStopV2'))]",
+        "[variables('functionHostKeyReaderRoleDefinitionDeploymentName')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('functionHostKeyReaderRoleDefinitionResourceId')]",
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppNameStartStopV2')), '2022-03-01', 'Full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      }
     },
     {
       "type": "Microsoft.OperationalInsights/workspaces",
