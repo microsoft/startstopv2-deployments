@@ -71,6 +71,45 @@ After the start/stop deployment is completed, please follow the steps below to e
 1. Enter the name of the Azure function in the "Select search by name or email address" box. Select the function name
 1. Click the <b>Save</b> button
 
+# Optional operations workbook
+
+The optional [Start/Stop V2 Operations Workbook](artifacts/workbooks/StartStopV2OperationsWorkbook.json) visualizes:
+
+- execution totals and successful or failed operations;
+- start and stop activity over time;
+- recent failed VM operations;
+- scheduled, auto-stop, and alert heartbeat telemetry;
+- estimated stopped runtime and cost avoidance by VM.
+
+The workbook is deployed separately so existing Start/Stop V2 deployments and automatic updates are unchanged. It queries the `AppMetrics` table in the Log Analytics workspace connected to the solution's workspace-based Application Insights resource.
+
+[![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fstartstopv2-deployments%2Fmain%2Fartifacts%2Fworkbooks%2FStartStopV2OperationsWorkbook.json)
+
+Deploy the workbook to a resource group with Azure CLI:
+
+```azurecli
+az deployment group create \
+  --resource-group <resource-group> \
+  --template-file artifacts/workbooks/StartStopV2OperationsWorkbook.json \
+  --parameters \
+    logAnalyticsWorkspaceResourceId="/subscriptions/<subscription-id>/resourceGroups/<workspace-resource-group>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>" \
+    defaultTimeRangeInHours=168 \
+    vmHourlyRate="0.10"
+```
+
+Or deploy it with Azure PowerShell:
+
+```powershell
+New-AzResourceGroupDeployment `
+  -ResourceGroupName <resource-group> `
+  -TemplateFile artifacts/workbooks/StartStopV2OperationsWorkbook.json `
+  -logAnalyticsWorkspaceResourceId "/subscriptions/<subscription-id>/resourceGroups/<workspace-resource-group>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>" `
+  -defaultTimeRangeInHours 168 `
+  -vmHourlyRate "0.10"
+```
+
+`defaultTimeRangeInHours` sets the initial view and can be changed in the workbook. `vmHourlyRate` is a blended estimate in your preferred billing currency; the workbook does not query billing data. The cost estimate pairs successful Stop events with the next successful Start event observed for each VM, so missing or repeated telemetry can affect the result.
+
 # Upcoming or recent updates to Start/Stop V2
 **October 28, 2024**
 The KQL queries in Dashboard have been updated to use the customMetrics table rather than the traces table. This update addresses missing logs that were occurring in some cases in the earlier update.

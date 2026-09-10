@@ -1,0 +1,293 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Resource ID of the Log Analytics workspace connected to the Start/Stop V2 Application Insights resource."
+      }
+    },
+    "workbookDisplayName": {
+      "type": "string",
+      "defaultValue": "Start/Stop V2 Operations",
+      "minLength": 1,
+      "metadata": {
+        "description": "Display name for the shared Azure Monitor Workbook."
+      }
+    },
+    "workbookLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region in which to store the workbook resource."
+      }
+    },
+    "defaultTimeRangeInHours": {
+      "type": "int",
+      "defaultValue": 168,
+      "allowedValues": [
+        1,
+        4,
+        12,
+        24,
+        48,
+        72,
+        168,
+        336,
+        720
+      ],
+      "metadata": {
+        "description": "Initial workbook time range in hours. Workbook viewers can change the time range interactively."
+      }
+    },
+    "vmHourlyRate": {
+      "type": "string",
+      "defaultValue": "0.10",
+      "metadata": {
+        "description": "Estimated hourly cost per stopped VM, expressed in the desired billing currency. This is used only for workbook estimates."
+      }
+    }
+  },
+  "variables": {
+    "workbookId": "[guid(resourceGroup().id, parameters('logAnalyticsWorkspaceResourceId'), parameters('workbookDisplayName'))]",
+    "workbookData": {
+      "version": "Notebook/1.0",
+      "items": [
+        {
+          "type": 1,
+          "content": {
+            "json": "# Start/Stop V2 Operations\n\nOperational telemetry from the Log Analytics workspace connected to Start/Stop V2 Application Insights. Cost avoidance is an estimate based on successful Stop-to-Start intervals observed in the selected time range."
+          },
+          "name": "Workbook introduction"
+        },
+        {
+          "type": 9,
+          "content": {
+            "version": "KqlParameterItem/1.0",
+            "parameters": [
+              {
+                "id": "d6d76109-f11f-42b7-bb76-0052da048201",
+                "version": "KqlParameterItem/1.0",
+                "name": "TimeRange",
+                "label": "Time range",
+                "type": 4,
+                "isRequired": true,
+                "value": {
+                  "durationMs": "[mul(parameters('defaultTimeRangeInHours'), 3600000)]"
+                },
+                "typeSettings": {
+                  "selectableValues": [
+                    {
+                      "durationMs": 3600000
+                    },
+                    {
+                      "durationMs": 14400000
+                    },
+                    {
+                      "durationMs": 43200000
+                    },
+                    {
+                      "durationMs": 86400000
+                    },
+                    {
+                      "durationMs": 172800000
+                    },
+                    {
+                      "durationMs": 259200000
+                    },
+                    {
+                      "durationMs": 604800000
+                    },
+                    {
+                      "durationMs": 1209600000
+                    },
+                    {
+                      "durationMs": 2592000000
+                    }
+                  ],
+                  "allowCustom": true
+                }
+              },
+              {
+                "id": "d795f94c-f4ee-494b-a563-35c0e106ac7f",
+                "version": "KqlParameterItem/1.0",
+                "name": "VmHourlyRate",
+                "label": "Estimated VM hourly rate",
+                "type": 1,
+                "isRequired": true,
+                "value": "[parameters('vmHourlyRate')]"
+              }
+            ],
+            "style": "pills",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          },
+          "name": "Workbook parameters"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "let Events = AppMetrics\n| where TimeGenerated {TimeRange}\n| where Name == \"VmExecutionsAttempted\"\n| extend Successful = tobool(tostring(Properties[\"prop__Successful\"])), Action = tostring(Properties[\"prop__ActionType\"]), VMName = tostring(Properties[\"prop__ResourceName\"]), MetricValue = coalesce(todouble(Sum), todouble(ItemCount), 1.0);\nlet Summary = Events\n| summarize Executions = tolong(sum(MetricValue)), SuccessfulExecutions = tolong(sumif(MetricValue, Successful == true)), Failures = tolong(sumif(MetricValue, Successful == false)), VirtualMachines = dcountif(VMName, isnotempty(VMName));\nunion\n(Summary | project Metric = \"Executions\", Value = Executions),\n(Summary | project Metric = \"Successful\", Value = SuccessfulExecutions),\n(Summary | project Metric = \"Failures\", Value = Failures),\n(Summary | project Metric = \"VMs affected\", Value = VirtualMachines)",
+            "size": 4,
+            "title": "Execution summary",
+            "noDataMessage": "No Start/Stop V2 execution metrics were found in the selected time range.",
+            "noDataMessageStyle": 5,
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "crossComponentResources": [
+              "[parameters('logAnalyticsWorkspaceResourceId')]"
+            ],
+            "visualization": "tiles",
+            "tileSettings": {
+              "titleContent": {
+                "columnMatch": "Metric",
+                "formatter": 1
+              },
+              "leftContent": {
+                "columnMatch": "Value",
+                "formatter": 12,
+                "numberFormat": {
+                  "unit": 17,
+                  "options": {
+                    "maximumFractionDigits": 0
+                  }
+                }
+              },
+              "showBorder": false
+            }
+          },
+          "name": "Execution summary"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "AppMetrics\n| where TimeGenerated {TimeRange}\n| where Name == \"VmExecutionsAttempted\"\n| extend Successful = tobool(tostring(Properties[\"prop__Successful\"])), Action = tostring(Properties[\"prop__ActionType\"]), MetricValue = coalesce(todouble(Sum), todouble(ItemCount), 1.0)\n| extend Series = strcat(Action, iff(Successful == true, \" succeeded\", \" failed\"))\n| summarize Executions = sum(MetricValue) by bin(TimeGenerated, {TimeRange:grain}), Series\n| order by TimeGenerated asc",
+            "size": 1,
+            "title": "Start and stop activity",
+            "noDataMessage": "No Start/Stop V2 execution metrics were found in the selected time range.",
+            "noDataMessageStyle": 5,
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "crossComponentResources": [
+              "[parameters('logAnalyticsWorkspaceResourceId')]"
+            ],
+            "visualization": "timechart"
+          },
+          "name": "Start and stop activity"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "AppMetrics\n| where TimeGenerated {TimeRange}\n| where Name == \"VmExecutionsAttempted\"\n| extend Successful = tobool(tostring(Properties[\"prop__Successful\"]))\n| where Successful == false\n| project TimeGenerated, Action = tostring(Properties[\"prop__ActionType\"]), VMName = tostring(Properties[\"prop__ResourceName\"]), ResourceGroup = tostring(Properties[\"prop__ResourceGroup\"]), SubscriptionId = tostring(Properties[\"prop__SubscriptionId\"]), OperationReferenceId = tostring(Properties[\"prop__OperationReferenceId\"]), ResourceCorrelationId = tostring(Properties[\"prop__ResourceCorrelationId\"])\n| order by TimeGenerated desc\n| take 100",
+            "size": 1,
+            "title": "Failed VM operations",
+            "noDataMessage": "No failed Start/Stop V2 VM operations were found in the selected time range.",
+            "noDataMessageStyle": 1,
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "crossComponentResources": [
+              "[parameters('logAnalyticsWorkspaceResourceId')]"
+            ],
+            "gridSettings": {
+              "filter": true,
+              "rowLimit": 100
+            }
+          },
+          "name": "Failed VM operations"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "datatable(MetricName:string, Scenario:string)\n[\n  \"NoPiiScheduledHeartbeat\", \"Scheduled\",\n  \"NoPiiAutostopHeartbeat\", \"Auto-stop\",\n  \"NoPiiAlertHeartbeat\", \"Alert\"\n]\n| join kind=leftouter (\n    AppMetrics\n    | where TimeGenerated {TimeRange}\n    | where Name in (\"NoPiiScheduledHeartbeat\", \"NoPiiAutostopHeartbeat\", \"NoPiiAlertHeartbeat\")\n    | summarize LastSeen = max(TimeGenerated) by MetricName = Name\n  ) on MetricName\n| extend Status = iff(isnull(LastSeen), \"Not observed\", \"Observed\"), MinutesSinceLastHeartbeat = iff(isnull(LastSeen), tolong(null), datetime_diff(\"minute\", now(), LastSeen))\n| project Scenario, Status, LastSeen, MinutesSinceLastHeartbeat\n| order by Scenario asc",
+            "size": 1,
+            "title": "Heartbeat telemetry status",
+            "description": "Shows whether each Start/Stop V2 heartbeat metric was observed in the selected time range.",
+            "noDataMessage": "Heartbeat status could not be calculated.",
+            "noDataMessageStyle": 5,
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "crossComponentResources": [
+              "[parameters('logAnalyticsWorkspaceResourceId')]"
+            ],
+            "gridSettings": {
+              "filter": true,
+              "rowLimit": 10
+            }
+          },
+          "name": "Heartbeat telemetry status"
+        },
+        {
+          "type": 3,
+          "content": {
+            "version": "KqlItem/1.0",
+            "query": "let HourlyRate = todouble(\"{VmHourlyRate}\");\nlet RangeEnd = {TimeRange:end};\nlet Events = AppMetrics\n| where TimeGenerated {TimeRange}\n| where Name == \"VmExecutionsAttempted\"\n| extend Successful = tobool(tostring(Properties[\"prop__Successful\"])), Action = tolower(tostring(Properties[\"prop__ActionType\"])), VMName = tostring(Properties[\"prop__ResourceName\"]), ResourceGroup = tostring(Properties[\"prop__ResourceGroup\"])\n| where Successful == true and isnotempty(VMName)\n| summarize by VMName, ResourceGroup, Action, TimeGenerated;\nlet Stops = Events\n| where Action contains \"stop\"\n| project VMName, ResourceGroup, StopTime = TimeGenerated;\nlet Starts = Events\n| where Action contains \"start\"\n| project VMName, StartTime = TimeGenerated;\nStops\n| join kind=leftouter Starts on VMName\n| summarize NextStart = minif(StartTime, StartTime > StopTime) by VMName, ResourceGroup, StopTime\n| extend IntervalEnd = coalesce(NextStart, RangeEnd)\n| extend EstimatedStoppedHours = round(datetime_diff(\"second\", IntervalEnd, StopTime) / 3600.0, 2)\n| where EstimatedStoppedHours >= 0\n| summarize StopIntervals = count(), EstimatedStoppedHours = round(sum(EstimatedStoppedHours), 2) by VMName, ResourceGroup\n| extend EstimatedCostAvoidance = round(EstimatedStoppedHours * HourlyRate, 2)\n| order by EstimatedCostAvoidance desc",
+            "size": 1,
+            "title": "Estimated stopped runtime and cost avoidance by VM",
+            "description": "Pairs successful Stop events with the next successful Start event observed for the same VM. Open intervals end at the selected time range boundary.",
+            "noDataMessage": "No successful Stop events were found in the selected time range.",
+            "noDataMessageStyle": 1,
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "crossComponentResources": [
+              "[parameters('logAnalyticsWorkspaceResourceId')]"
+            ],
+            "gridSettings": {
+              "filter": true,
+              "rowLimit": 100
+            }
+          },
+          "name": "Estimated stopped runtime and cost avoidance"
+        },
+        {
+          "type": 1,
+          "content": {
+            "json": "### Estimation notes\n\n- The hourly rate is a user-provided blended estimate; the workbook does not query Azure billing data.\n- Only successful Stop events in the selected time range are counted. Each interval ends at the next observed successful Start event for that VM, or at the selected time range boundary when no later Start event is present.\n- Repeated or missing telemetry can affect the estimate. Use these values for operational trend analysis, not billing reconciliation."
+          },
+          "name": "Estimation notes"
+        }
+      ],
+      "isLocked": false,
+      "fallbackResourceIds": [
+        "[parameters('logAnalyticsWorkspaceResourceId')]"
+      ]
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/workbooks",
+      "apiVersion": "2023-06-01",
+      "name": "[variables('workbookId')]",
+      "location": "[parameters('workbookLocation')]",
+      "kind": "shared",
+      "tags": {
+        "SolutionName": "StartStopV2",
+        "Component": "OperationsWorkbook"
+      },
+      "properties": {
+        "displayName": "[parameters('workbookDisplayName')]",
+        "description": "Operations and estimated cost avoidance analytics for Start/Stop V2.",
+        "serializedData": "[string(variables('workbookData'))]",
+        "version": "Notebook/1.0",
+        "sourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+        "category": "workbook"
+      }
+    }
+  ],
+  "outputs": {
+    "workbookResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/workbooks', variables('workbookId'))]"
+    }
+  }
+}
