@@ -72,6 +72,9 @@ After the start/stop deployment is completed, please follow the steps below to e
 1. Click the <b>Save</b> button
 
 # Upcoming or recent updates to Start/Stop V2
+**November 6, 2026**
+Start/Stop v2 has been updated to .NET 10.
+
 **October 28, 2024**
 The KQL queries in Dashboard have been updated to use the customMetrics table rather than the traces table. This update addresses missing logs that were occurring in some cases in the earlier update.
 
@@ -85,7 +88,12 @@ Automatic updates to Start/Stop v2 will be downloaded from GitHub rather than fr
 Workspace-based Application insights is now available for Start/Stop v2.
  
 ## Updating Start/Stop v2
-To update an existing  Start/Stop v2 solution that you deployed, you can run the TriggerAutoUpdate Function either manually or let it run automatically on schedule. By default, it runs daily.
+To update an existing  Start/Stop v2 solution that you deployed, we recommend that you do the following to ensure that the file deployment is successful:
+1. Stop the Function app.
+2. Deploy the applicable template under **Get Latest Version (Existing Users)** for [Public cloud](#get-latest-version-existing-users) or [Fairfax/USGOV](#get-latest-version-existing-users-1) via the Deploy to Azure button.
+3. After the template finishes running, you can start the Function App.
+
+> Note: These steps are recommended instead of using the TriggerAutoUpdate and UpdateStartStopV2 functions, which are [deprecated](https://learn.microsoft.com/azure/azure-functions/start-stop-v2/overview#important-startstop-vms-v2-updates).
 
 # Known issues
 - The CostAnalyticsFunction and SavingsAnalyticsFunction functions might return failures such as 429 Too Many Requests errors. There is no ETA for fixing this issue, but this function does not impact the functionality of the Start/Stop V2 solution. This function is used by Microsoft to estimate aggregate savings of Start/Stop V2 across customers.
